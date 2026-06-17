@@ -1,8 +1,9 @@
 # VoidRecon
  <img width="2281" height="501" alt="VoidRecon" src="https://github.com/user-attachments/assets/67ae50fb-6ab7-40da-aec2-cf8b88e918f8" />
-VoidRecon is an open source Sub-GHz RF reconnaissance platform based on the CC1101 transceiver. It provides packet sniffing, raw waveform capture and replay, fixed-code remote analysis, spectrum scanning, jamming, brute-force testing, and RF communication features across sub-1 GHz bands.
+ <p align="center">
+  <b>A suite of RF offensive and defensive tools for the ESP32(Atmega32u4 in future)</b>
+ </p>
 
-VoidRecon is currently implemented for ESP32 hardware with CC1101. ATmega32U4 support is planned.
 
 ---
 
@@ -22,4 +23,6 @@ VoidRecon is currently implemented for ESP32 hardware with CC1101. ATmega32U4 su
 
 ---
 
-
+## Getting Started
+Download the [latest release](https://github.com/wrait8/VoidRecon/releases/latest) of the firmware.
+Check out the project [wiki](https://github.com/wrait8/VoidRecon/wiki) for a full overview of the ESP32 Marauder
