@@ -22,26 +22,4 @@ VoidRecon is currently implemented for ESP32 hardware with CC1101. ATmega32U4 su
 
 ---
 
-## Commands
 
-| Command   | Description |
-|----------|-------------|
-| analyze  | Scan frequency range for active signals |
-| getrssi  | Display RSSI/LQI of last received packet |
-| rx       | Toggle packet sniffing |
-| rxraw    | Raw RF sampling mode |
-| rec      | Toggle packet recording |
-| recraw   | Toggle raw RF recording |
-| recsig   | Capture fixed-code signals |
-| add      | Add frame to buffer |
-| show     | Show recorded buffer |
-| flush    | Clear buffer |
-| play     | Replay buffered packets |
-| playsig  | Replay fixed-code signal |
-| playraw  | Replay raw RF samples |
-| jam      | Enable/disable jamming |
-| brute    | Signal brute-force mode |
-| chat     | RF chat mode |
-| set*     | Configure radio parameters |
-
----
