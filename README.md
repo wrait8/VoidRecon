@@ -25,4 +25,4 @@
 
 ## Getting Started
 Download the [latest release](https://github.com/wrait8/VoidRecon/releases/latest) of the firmware.
-Check out the project [wiki](https://github.com/wrait8/VoidRecon/wiki) for a full overview of the ESP32 Marauder
+Check out the project [wiki](https://github.com/wrait8/VoidRecon/wiki) for a full overview of the VoidRecon.
