@@ -82,20 +82,17 @@ def auto_detect_Device():
 
 # === FIRMWARE OPERATIONS ===
 def check_esptool():
-    """Check if esptool.exe is available"""
-    # Check for esptool.exe in current directory
-    if os.path.exists('esptool.exe'):
-        return True, 'esptool.exe'
-    
-    # Check for esptool.exe in PATH
+    """Check if esptool is available via python -m"""
+    # Check if esptool module is available
     try:
-        result = subprocess.run(['esptool.exe', '--version'], capture_output=True, text=True, timeout=2)
+        result = subprocess.run([sys.executable, '-m', 'esptool', '--version'], 
+                              capture_output=True, text=True, timeout=2)
         if result.returncode == 0:
-            return True, 'esptool.exe'
+            return True, 'python -m esptool'
     except:
         pass
     
-    # Check for esptool.py
+    # Fallback: check for esptool.py in PATH
     try:
         result = subprocess.run(['esptool.py', '--version'], capture_output=True, text=True, timeout=2)
         if result.returncode == 0:
@@ -103,11 +100,19 @@ def check_esptool():
     except:
         pass
     
+    # Fallback: check for esptool.exe in PATH
+    try:
+        result = subprocess.run(['esptool.exe', '--version'], capture_output=True, text=True, timeout=2)
+        if result.returncode == 0:
+            return True, 'esptool.exe'
+    except:
+        pass
+    
     return False, None
 
 def install_esptool():
-    """Install esptool.py via pip"""
-    print(YELLOW + "[!] " + RESET + "esptool.exe not found. Installing...")
+    """Install esptool via pip"""
+    print(YELLOW + "[!] " + RESET + "esptool not found. Installing...")
     try:
         subprocess.run([sys.executable, '-m', 'pip', 'install', 'esptool'], check=True)
         print(GREEN + "[+] " + RESET + "esptool installed successfully!")
@@ -140,16 +145,28 @@ def ensure_esptool():
     
     return False, None
 
+def build_esptool_cmd(port, baud, *args):
+    """Build the esptool command with the preferred method"""
+    has_esptool, cmd_type = check_esptool()
+    
+    if cmd_type == 'python -m esptool':
+        # Use python -m esptool
+        cmd = [sys.executable, '-m', 'esptool', '--port', port, '--baud', str(baud)] + list(args)
+    elif cmd_type == 'esptool.py':
+        cmd = ['esptool.py', '--port', port, '--baud', str(baud)] + list(args)
+    elif cmd_type == 'esptool.exe':
+        cmd = ['esptool.exe', '--port', port, '--baud', str(baud)] + list(args)
+    else:
+        # Fallback to python -m esptool
+        cmd = [sys.executable, '-m', 'esptool', '--port', port, '--baud', str(baud)] + list(args)
+    
+    return cmd
+
 def erase_flash(port, baud=460800):
     """Erase ESP32 flash"""
     print(YELLOW + "[?] " + RESET + "Erasing flash...", end=" ", flush=True)
     try:
-        # Use esptool.exe explicitly
-        if os.path.exists('esptool.exe'):
-            cmd = ['esptool.exe', '--port', port, '--baud', str(baud), 'erase_flash']
-        else:
-            cmd = ['esptool.py', '--port', port, '--baud', str(baud), 'erase_flash']
-        
+        cmd = build_esptool_cmd(port, baud, 'erase_flash')
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
             print(GREEN + "[DONE]" + RESET)
@@ -182,12 +199,7 @@ def upload_firmware(port, firmware_path, baud=460800, address="0x1000"):
     print(DIM + f"    └─ Baud: {baud}" + RESET)
     
     try:
-        # Use esptool.exe explicitly
-        if os.path.exists('esptool.exe'):
-            cmd = ['esptool.exe', '--port', port, '--baud', str(baud), 'write_flash', address, firmware_path]
-        else:
-            cmd = ['esptool.py', '--port', port, '--baud', str(baud), 'write_flash', address, firmware_path]
-        
+        cmd = build_esptool_cmd(port, baud, 'write_flash', address, firmware_path)
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
         
         if result.returncode == 0:
@@ -208,12 +220,7 @@ def verify_firmware(port, firmware_path, address="0x1000"):
     """Verify uploaded firmware"""
     print(YELLOW + "[?] " + RESET + "Verifying firmware...", end=" ", flush=True)
     try:
-        # Use esptool.exe explicitly
-        if os.path.exists('esptool.exe'):
-            cmd = ['esptool.exe', '--port', port, 'verify_flash', address, firmware_path]
-        else:
-            cmd = ['esptool.py', '--port', port, 'verify_flash', address, firmware_path]
-        
+        cmd = build_esptool_cmd(port, 460800, 'verify_flash', address, firmware_path)
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
             print(GREEN + "[OK]" + RESET)
@@ -262,7 +269,7 @@ def interactive_upload():
  
     # Check for esptool
     if not check_esptool():
-        print(YELLOW + "[!] " + RESET + "esptool.exe not found!")
+        print(YELLOW + "[!] " + RESET + "esptool not found!")
         install = input(YELLOW + "[?] " + RESET + "Install esptool? (y/n): ").strip().lower()
         if install == 'y':
             if not install_esptool():
@@ -385,7 +392,7 @@ Examples:
  
     # Check esptool
     if not check_esptool():
-        print(RED + "[!] " + RESET + "esptool.exe not found!")
+        print(RED + "[!] " + RESET + "esptool not found!")
         sys.exit(1)
     
     print("[APP] " + RESET + f"Device connected on port {args.port}")
