@@ -347,23 +347,20 @@
         <a href="#downloads">Downloads</a>
       </div>
 
-      <!-- buttons: (removed Building Guide) now Wiki + Releases -->
+      <!-- buttons: Wiki + GitHub + Releases -->
       <div class="button-group">
-        <!-- Wiki (replaces Building Guide) -->
         <a href="https://github.com/wrait8/VoidRecon/wiki" class="btn btn-white">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4v16h16V4H4z"/><path d="M8 8h8"/><path d="M8 12h6"/><path d="M8 16h4"/>
           </svg>
           Wiki
         </a>
-        <!-- GitHub -->
         <a href="https://github.com/wrait8/VoidRecon" class="btn btn-black">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.3-.535-1.52.117-3.16 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.64.24 2.86.118 3.16.768.84 1.233 1.91 1.233 3.22 0 4.61-2.804 5.62-5.476 5.92.43.37.824 1.102.824 2.22 0 1.602-.015 2.894-.015 3.287 0 .322.216.694.825.577C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
           </svg>
           GitHub
         </a>
-        <!-- Releases (Downloads) -->
         <a href="https://github.com/wrait8/VoidRecon/releases" class="btn btn-black">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -386,7 +383,7 @@
     </div>
   </section>
 
-  <!-- ===== FLASHER (updated with WFlasher details) ===== -->
+  <!-- ===== FLASHER (WFlasher) ===== -->
   <section id="flasher" class="section-card">
     <h2>// Flasher</h2>
     <p><strong>WFlasher</strong> – professional cross‑platform ESP32 firmware uploader with interactive CLI and web GUI.</p>
@@ -433,7 +430,7 @@
     </ul>
   </section>
 
-  <!-- ===== DOWNLOADS (redirects to Releases) ===== -->
+  <!-- ===== DOWNLOADS (dark button) ===== -->
   <section id="downloads" class="section-card">
     <h2>// Downloads</h2>
     <p>Pre‑compiled firmware (<code>voidrecon.bin</code>), Python CLI tools, and source code are available on the <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank">Releases page</a>.</p>
@@ -442,12 +439,19 @@
       <li>All releases include firmware binaries and release notes</li>
       <li>Also available: <a href="https://github.com/wrait8/WFlasher" target="_blank">WFlasher</a> standalone tool</li>
     </ul>
-    <p style="margin-top:1rem;"><a href="https://github.com/wrait8/VoidRecon/releases" class="btn btn-white" style="display:inline-flex;padding:0.6rem 2.4rem;font-size:1rem;min-width:auto;">⬇ Go to Releases</a></p>
+    <p style="margin-top:1.5rem;">
+      <a href="https://github.com/wrait8/VoidRecon/releases" class="btn btn-black" style="display:inline-flex;padding:0.7rem 2.8rem;font-size:1rem;min-width:auto;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Go to Releases
+      </a>
+    </p>
   </section>
 
-  <!-- footer -->
+  <!-- footer – no license mention -->
   <footer class="footer-note">
-    <span style="display:inline-block;margin-bottom:0.4rem;">VOID RECON · MIT License · </span>
+    <span style="display:inline-block;margin-bottom:0.4rem;">VOID RECON · </span>
     <a href="https://github.com/wrait8/VoidRecon">GitHub</a> · 
     <a href="https://github.com/wrait8/VoidRecon/wiki">Wiki</a> · 
     <a href="https://github.com/wrait8/VoidRecon/releases">Releases</a>
@@ -456,7 +460,7 @@
 </div>
 
 <script>
-  console.log('Void Recon · WFlasher integrated');
+  console.log('Void Recon · WFlasher integrated · no license');
 </script>
 </body>
 </html>
