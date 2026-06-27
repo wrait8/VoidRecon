@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Void Recon · WRAITH</title>
-  <!-- Google Fonts: Space Grotesk + Space Mono (matching theme) -->
+  <!-- Google Fonts: Space Grotesk + Space Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    /* ----- reset & base ----- */
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       background: #0b0c0e;
@@ -24,7 +23,6 @@
       background: #0d0f12;
       overflow: hidden;
     }
-    /* full‑page bg (matches theme) */
     .page-bg {
       position: fixed;
       top: 0; left: 0;
@@ -54,7 +52,7 @@
       backdrop-filter: blur(1px);
     }
 
-    /* ----- hero (with logo & buttons) ----- */
+    /* ----- hero (no logo) ----- */
     .hero {
       position: relative;
       z-index: 10;
@@ -74,57 +72,6 @@
       text-align: center;
       padding: 1.8rem 1.5rem;
     }
-    .logo-wrapper {
-      margin-bottom: 1.2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      filter: drop-shadow(0 0 40px rgba(255,255,255,0.25)) drop-shadow(0 0 80px rgba(255,255,255,0.1));
-      width: 160px;
-      height: 160px;
-      position: relative;
-    }
-    .logo-wrapper::before {
-      content: '';
-      position: absolute;
-      inset: -10px;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
-      border-radius: 50%;
-      opacity: 0.6;
-    }
-    .wraith-logo {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transition: transform 0.3s ease;
-      position: relative;
-      z-index: 1;
-      filter: brightness(1.1) drop-shadow(0 0 20px rgba(255,255,255,0.2));
-    }
-    .wraith-logo:hover {
-      transform: scale(1.02);
-      filter: brightness(1.2) drop-shadow(0 0 40px rgba(255,255,255,0.3));
-    }
-    .logo-fallback {
-      display: none;
-      font-family: 'Space Mono', monospace;
-      font-size: 4rem;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 0 40px rgba(255,255,255,0.3);
-      letter-spacing: 0.1em;
-      position: relative;
-      z-index: 1;
-    }
-    .wraith-logo:not([src]), .wraith-logo[src=""], .wraith-logo[src*="error"] {
-      display: none;
-    }
-    .wraith-logo:not([src])+.logo-fallback,
-    .wraith-logo[src=""]+.logo-fallback,
-    .wraith-logo[src*="error"]+.logo-fallback {
-      display: block;
-    }
-
     .main-title {
       font-family: 'Space Mono', monospace;
       font-weight: 700;
@@ -148,7 +95,7 @@
       display: inline-block;
     }
 
-    /* ----- menu (About, Flasher, Builds, Downloads) ----- */
+    /* menu */
     .nav-menu {
       display: flex;
       flex-wrap: wrap;
@@ -232,17 +179,130 @@
     }
     .btn-black svg { fill: #d0e8e2; }
 
-    /* ----- responsive adjustments ----- */
+    /* section cards */
+    .section-card {
+      position: relative;
+      z-index: 10;
+      padding: 3rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .section-card:last-of-type {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .section-card h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 2rem;
+      color: #fff;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.2rem;
+    }
+    .section-card p, .section-card li {
+      color: rgba(200,210,215,0.75);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 800px;
+    }
+    .section-card ul {
+      list-style: none;
+      padding-left: 0;
+      max-width: 800px;
+    }
+    .section-card ul li::before {
+      content: "▹ ";
+      color: #6effe0;
+      opacity: 0.6;
+    }
+    .section-card code {
+      background: rgba(255,255,255,0.05);
+      padding: 0.1rem 0.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: #b0d0d0;
+      border-radius: 2px;
+    }
+    .section-card a {
+      color: #6effe0;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(110,255,224,0.3);
+    }
+    .section-card a:hover {
+      color: #a0fff0;
+      border-bottom-color: rgba(110,255,224,0.7);
+    }
+    .badge-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1rem;
+      margin: 0.6rem 0 1.2rem;
+    }
+    .badge {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 0.2rem 0.9rem;
+      font-size: 0.7rem;
+      font-family: 'Space Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(200,210,215,0.5);
+      border-radius: 0px;
+    }
+    .badge.green {
+      border-color: rgba(110,255,224,0.15);
+      color: #6effe0;
+    }
+    .flasher-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin-top: 1rem;
+    }
+    .flasher-card {
+      background: rgba(18,18,18,0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1.5rem 1.8rem;
+      transition: 0.25s ease;
+    }
+    .flasher-card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-3px);
+    }
+    .flasher-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .flasher-card p {
+      font-size: 0.95rem;
+      color: rgba(200,210,215,0.6);
+      line-height: 1.5;
+      margin-bottom: 0.6rem;
+    }
+    .flasher-card .cmd {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      background: rgba(0,0,0,0.5);
+      padding: 0.3rem 0.8rem;
+      display: inline-block;
+      border-left: 2px solid #6effe0;
+      color: #b0d0d0;
+    }
+
     @media (max-width: 700px) {
-      .logo-wrapper { width: 120px; height: 120px; }
       .btn { font-size: 1rem; padding: 0.9rem 3.4rem; min-width: 200px; }
       .button-group { gap: 0.8rem; flex-direction: column; width: 100%; max-width: 320px; margin: 0 auto; }
       .btn { width: 100%; justify-content: center; }
       .nav-menu { gap: 1rem 1.8rem; font-size: 0.75rem; }
+      .section-card { padding: 2rem 1.2rem; }
+      .section-card h2 { font-size: 1.6rem; }
     }
     @media (max-width: 480px) {
       .hero { height: 90vh; }
-      .logo-wrapper { width: 100px; height: 100px; }
       .main-title { font-size: 3rem; }
       .sub-title { font-size: 0.9rem; letter-spacing: 0.12em; }
       .btn { font-size: 0.85rem; padding: 1rem 2.6rem; min-width: 170px; }
@@ -250,7 +310,6 @@
       .nav-menu { gap: 0.8rem 1.2rem; font-size: 0.7rem; }
     }
 
-    /* small extra: footer / legal note (optional) */
     .footer-note {
       position: relative;
       z-index: 10;
@@ -260,7 +319,6 @@
       color: rgba(200,210,215,0.25);
       letter-spacing: 0.06em;
       border-top: 1px solid rgba(255,255,255,0.04);
-      margin-top: 0;
       background: rgba(0,0,0,0.3);
     }
     .footer-note a {
@@ -273,19 +331,11 @@
 </head>
 <body>
 <div class="page-wrapper">
-  <!-- full‑page background -->
   <div class="page-bg"></div>
 
-  <!-- HERO -->
+  <!-- HERO (no logo) -->
   <section class="hero">
     <div class="hero-content">
-      <!-- logo -->
-      <div class="logo-wrapper">
-        <img src="https://wrait8.github.io/Images/wraith.png" alt="WRAITH logo" class="wraith-logo" />
-        <span class="logo-fallback">◈</span>
-      </div>
-
-      <!-- main title & subtitle -->
       <h1 class="main-title">VOID RECON</h1>
       <div class="sub-title">sub‑1 ghz swiss army knife</div>
 
@@ -297,14 +347,14 @@
         <a href="#downloads">Downloads</a>
       </div>
 
-      <!-- buttons: Building Guide · GitHub · Downloads (hero) -->
+      <!-- buttons: (removed Building Guide) now Wiki + Releases -->
       <div class="button-group">
-        <!-- Building Guide button (primary) -->
-        <a href="#building-guide" class="btn btn-white">
+        <!-- Wiki (replaces Building Guide) -->
+        <a href="https://github.com/wrait8/VoidRecon/wiki" class="btn btn-white">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            <path d="M4 4v16h16V4H4z"/><path d="M8 8h8"/><path d="M8 12h6"/><path d="M8 16h4"/>
           </svg>
-          Building Guide
+          Wiki
         </a>
         <!-- GitHub -->
         <a href="https://github.com/wrait8/VoidRecon" class="btn btn-black">
@@ -313,77 +363,100 @@
           </svg>
           GitHub
         </a>
-        <!-- Downloads -->
-        <a href="#downloads" class="btn btn-black">
+        <!-- Releases (Downloads) -->
+        <a href="https://github.com/wrait8/VoidRecon/releases" class="btn btn-black">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Downloads
+          Releases
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ===== about / flasher / builds / downloads anchor sections (dummy) ===== -->
-  <section id="about" style="position:relative;z-index:10;padding:4rem 2rem;max-width:1000px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.05);">
-    <h2 style="font-family:'Space Mono',monospace;font-size:2rem;color:#fff;letter-spacing:0.02em;margin-bottom:1rem;">About VoidRecon</h2>
-    <p style="color:rgba(200,210,215,0.7);font-size:1.1rem;line-height:1.7;max-width:800px;">
-      Sub‑1 GHz Swiss Army knife – Sniff, record, replay, and brute‑force signals with an ESP32 and a CC1101 transceiver. 
-      Wide frequency coverage (300‑928 MHz), multiple modulations (2‑FSK, GFSK, ASK/OOK, MSK), adjustable data rate, 
-      packet engine, real‑time sniffer, signal analysis, recording &amp; playback, jamming, brute‑force, and chat mode.
-    </p>
-  </section>
-
-  <section id="flasher" style="position:relative;z-index:10;padding:3rem 2rem;max-width:1000px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.04);">
-    <h2 style="font-family:'Space Mono',monospace;font-size:2rem;color:#fff;letter-spacing:0.02em;margin-bottom:1rem;">Flasher</h2>
-    <p style="color:rgba(200,210,215,0.7);font-size:1.1rem;line-height:1.7;">
-      Flash the pre‑compiled firmware (<code>voidrecon.bin</code>) using the Python CLI tool or ESP32 flashing tools. 
-      See the <a href="#building-guide" style="color:#6effe0;text-decoration:none;border-bottom:1px dotted rgba(110,255,224,0.3);">Building Guide</a> for detailed steps.
-    </p>
-  </section>
-
-  <section id="builds" style="position:relative;z-index:10;padding:3rem 2rem;max-width:1000px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.04);">
-    <h2 style="font-family:'Space Mono',monospace;font-size:2rem;color:#fff;letter-spacing:0.02em;margin-bottom:1rem;">Builds</h2>
-    <p style="color:rgba(200,210,215,0.7);font-size:1.1rem;line-height:1.7;">
-      Official PCB and breadboard wiring diagrams. All hardware files (schematics, Gerber, BOM) are in the <code>PCB/</code> folder. 
-      You can also wire the CC1101 to an ESP32 – see the guide.
-    </p>
-  </section>
-
-  <section id="downloads" style="position:relative;z-index:10;padding:3rem 2rem;max-width:1000px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04);">
-    <h2 style="font-family:'Space Mono',monospace;font-size:2rem;color:#fff;letter-spacing:0.02em;margin-bottom:1rem;">Downloads</h2>
-    <p style="color:rgba(200,210,215,0.7);font-size:1.1rem;line-height:1.7;">
-      Pre‑compiled firmware (<code>voidrecon.bin</code>), Python CLI tool, and source code available on 
-      <a href="https://github.com/wrait8/VoidRecon" style="color:#6effe0;text-decoration:none;border-bottom:1px dotted rgba(110,255,224,0.3);">GitHub</a>. 
-      All releases are tagged and include detailed release notes.
-    </p>
-  </section>
-
-  <!-- Building Guide anchor (extra detail) -->
-  <section id="building-guide" style="position:relative;z-index:10;padding:3rem 2rem;max-width:1000px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.04);">
-    <h2 style="font-family:'Space Mono',monospace;font-size:2rem;color:#fff;letter-spacing:0.02em;margin-bottom:1rem;">📐 Building Guide</h2>
-    <div style="color:rgba(200,210,215,0.7);font-size:1rem;line-height:1.8;">
-      <p><strong>PCB version:</strong> Use the official PCB design (Gerber files in <code>PCB/</code>). Solder the Atmega32u4, CC1101 module, antenna, and passives. Flash the firmware via USB.</p>
-      <p><strong>Breadboard (ESP32):</strong> Connect CC1101 pins to ESP32: VCC→3.3V, GND→GND, SCLK→GPIO18, SO(MISO)→GPIO19, SI(MOSI)→GPIO23, CSn→GPIO5, GDO2→GPIO4 (optional), GDO0→GPIO2 (optional). Attach a quarter‑wave antenna (~17.3 cm for 433 MHz).</p>
-      <p><strong>Firmware:</strong> Flash <code>voidrecon.bin</code> via <code>esptool.py</code> or use the Python CLI. Connect at 115200 baud.</p>
-      <p style="margin-top:1.2rem;">📖 Full documentation: <a href="https://github.com/wrait8/VoidRecon" style="color:#6effe0;text-decoration:none;border-bottom:1px dotted rgba(110,255,224,0.3);">VoidRecon GitHub</a></p>
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="section-card">
+    <h2>// About</h2>
+    <p>Sub‑1 GHz Swiss Army knife – Sniff, record, replay, and brute‑force signals with an ESP32 and a CC1101 transceiver. Wide frequency coverage (300‑928 MHz), multiple modulations (2‑FSK, GFSK, ASK/OOK, MSK), adjustable data rate, packet engine, real‑time sniffer, signal analysis, recording &amp; playback, jamming, brute‑force, and chat mode.</p>
+    <div class="badge-group" style="margin-top:1.2rem;">
+      <span class="badge green">ESP32</span>
+      <span class="badge green">CC1101</span>
+      <span class="badge">RF</span>
+      <span class="badge">Sub‑1GHz</span>
     </div>
+  </section>
+
+  <!-- ===== FLASHER (updated with WFlasher details) ===== -->
+  <section id="flasher" class="section-card">
+    <h2>// Flasher</h2>
+    <p><strong>WFlasher</strong> – professional cross‑platform ESP32 firmware uploader with interactive CLI and web GUI.</p>
+    <div class="badge-group">
+      <span class="badge green">v1.0.0</span>
+      <span class="badge">Python 3.6+</span>
+      <span class="badge">Web Serial API</span>
+      <span class="badge">Cross‑platform</span>
+    </div>
+
+    <div class="flasher-grid">
+      <div class="flasher-card">
+        <h3>🌐 Web Interface</h3>
+        <p>Access the professional web flasher at <a href="https://wrait8.github.io/WFlasher/" target="_blank">wrait8.github.io/WFlasher</a></p>
+        <p style="font-size:0.9rem;color:rgba(200,210,215,0.5);">Auto‑detection, real‑time progress, multi‑file flash, serial monitor.</p>
+      </div>
+      <div class="flasher-card">
+        <h3>⌨️ CLI Tool</h3>
+        <p>Clone &amp; install:</p>
+        <div class="cmd">git clone https://github.com/wrait8/WFlasher.git</div>
+        <div class="cmd" style="margin-top:0.3rem;">pip install pyserial colorama esptool</div>
+        <p style="margin-top:0.6rem;">Interactive mode: <span class="cmd">python WFlasher.py</span></p>
+        <p>Command‑line: <span class="cmd">python WFlasher.py -p COM4 -f firmware.bin</span></p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Space Mono',monospace;font-size:1.2rem;color:#fff;margin:1.8rem 0 0.6rem;">Supported Devices</h3>
+    <ul>
+      <li>ESP32, ESP32‑S2, ESP32‑S3, ESP32‑C3, ESP32‑C6, ESP8266</li>
+      <li>Auto‑detection of connected devices</li>
+      <li>Multi‑file flash: bootloader, partition table, app</li>
+    </ul>
+    <p style="margin-top:1rem;">📖 Full documentation: <a href="https://github.com/wrait8/WFlasher" target="_blank">WFlasher GitHub</a></p>
+  </section>
+
+  <!-- ===== BUILDS ===== -->
+  <section id="builds" class="section-card">
+    <h2>// Builds</h2>
+    <p>Official PCB and breadboard wiring diagrams. All hardware files (schematics, Gerber, BOM) are in the <code>PCB/</code> folder. You can also wire the CC1101 to an ESP32 – see the <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank">Wiki</a> for detailed instructions.</p>
+    <ul style="margin-top:0.8rem;">
+      <li><strong>PCB version:</strong> Atmega32u4 + CC1101, USB‑C, SMA antenna</li>
+      <li><strong>Breadboard:</strong> ESP32 + CC1101 module (wiring diagram in Wiki)</li>
+      <li><strong>Antenna:</strong> quarter‑wave whip (~17.3 cm for 433 MHz) or SMA</li>
+    </ul>
+  </section>
+
+  <!-- ===== DOWNLOADS (redirects to Releases) ===== -->
+  <section id="downloads" class="section-card">
+    <h2>// Downloads</h2>
+    <p>Pre‑compiled firmware (<code>voidrecon.bin</code>), Python CLI tools, and source code are available on the <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank">Releases page</a>.</p>
+    <ul style="margin-top:0.8rem;">
+      <li>Latest release: <a href="https://github.com/wrait8/VoidRecon/releases/latest" target="_blank">v0.1.0-beta.2</a></li>
+      <li>All releases include firmware binaries and release notes</li>
+      <li>Also available: <a href="https://github.com/wrait8/WFlasher" target="_blank">WFlasher</a> standalone tool</li>
+    </ul>
+    <p style="margin-top:1rem;"><a href="https://github.com/wrait8/VoidRecon/releases" class="btn btn-white" style="display:inline-flex;padding:0.6rem 2.4rem;font-size:1rem;min-width:auto;">⬇ Go to Releases</a></p>
   </section>
 
   <!-- footer -->
   <footer class="footer-note">
     <span style="display:inline-block;margin-bottom:0.4rem;">VOID RECON · MIT License · </span>
     <a href="https://github.com/wrait8/VoidRecon">GitHub</a> · 
-    <a href="#building-guide">Building Guide</a> · 
-    <a href="#downloads">Downloads</a>
+    <a href="https://github.com/wrait8/VoidRecon/wiki">Wiki</a> · 
+    <a href="https://github.com/wrait8/VoidRecon/releases">Releases</a>
     <br><span style="opacity:0.4;font-size:0.7rem;">WRAITH · open‑source hacking tools</span>
   </footer>
 </div>
 
-<!-- small script to keep the logo fallback clean -->
 <script>
-  // if logo fails, fallback shows automatically via CSS
-  console.log('Void Recon · WRAITH');
+  console.log('Void Recon · WFlasher integrated');
 </script>
 </body>
 </html>
