@@ -577,7 +577,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
     rf.setRxMode();
     pinMode(2, INPUT);
     
-    Serial.print("Waiting for signal to start recording[PRESS ANY KEY TO STOP]...");
+    Serial.println("Waiting for signal to start recording[PRESS ANY KEY TO STOP]...");
     delayMicroseconds(1000);
     while (digitalRead(2) == LOW) {
         if (Serial.available()) {
