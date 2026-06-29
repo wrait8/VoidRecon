@@ -40,6 +40,11 @@ private:
     char textBuffer[BUFFER_SIZE];
     byte byteBuffer[64];
     
+    unsigned long lastSigCode;
+    unsigned int lastSigBits;
+    unsigned int lastSigDelay;
+    unsigned int lastSigProtocol;
+    
     // Command handlers
     void cmdHelp();
     void cmdSetModulation(const char* args);
@@ -89,6 +94,7 @@ private:
     void cmdPlayRaw(const char* args);
     void cmdRxRaw(const char* args);
     void cmdRecRaw(const char* args);
+    unsigned long findMostCommonPulse(unsigned long* pulses, int count);
     void cmdRecSig();
     void cmdPlaySig();
     void cmdSave();
@@ -97,6 +103,7 @@ private:
     void cmdLoadRaw();
     void cmdSaveSig();
     void cmdLoadSig();
+    void cmdShowSig(); 
     void cmdEcho(const char* args);
     void cmdStop();
     void cmdReset();
