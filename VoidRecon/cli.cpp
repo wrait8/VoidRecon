@@ -566,206 +566,48 @@ void CommandHandler::cmdRxRaw(const char* args) {
     rf.setRxMode();
 }
 void CommandHandler::cmdRecRaw(const char* args) {
-    int interval = 0;
-    if (strlen(args) > 0) {
-        interval = atoi(args);
-    }
-    
-    // ---- INTERVAL-BASED RECORDING (simple bit-banging) ----
-    if (interval > 0) {
-        rf.setCCMode(false);
-        rf.setPacketFormat(3);
-        rf.setRxMode();
-        pinMode(2, INPUT);
-        
-        Serial.print("Waiting for signal to start recording[PRESS ANY KEY TO STOP]...");
-        delayMicroseconds(1000);
-        while (digitalRead(2) == LOW) {
-            if (Serial.available()) {
-                Serial.println("Recording cancelled");
-                rf.setCCMode(true);
-                rf.setPacketFormat(0);
-                rf.setRxMode();
-                return;
-            }
-        }
-        
-        Serial.print("Recording RAW to the buffer...");
-        byte rawBuffer[4096];
-        int i = 0;
-        for (i = 0; i < 4096; i++) {
-            byte data = 0;
-            for (int j = 7; j >= 0; j--) {
-                bitWrite(data, j, digitalRead(2));
-                delayMicroseconds(interval);
-            }
-            rawBuffer[i] = data;
-            if (i % 10 == 0 && Serial.available()) {
-                Serial.println("Recording stopped by user");
-                break;
-            }
-        }
-        recorder.addRaw(rawBuffer, i);
-        rf.setCCMode(true);
-        rf.setPacketFormat(0);
-        rf.setRxMode();
-        Serial.println("Recording complete!");
+    int interval = atoi(args);
+    if (interval <= 0) {
+        Serial.println("Invalid interval");
         return;
     }
-    
-    // ---- EDGE-BASED RECORDING (fixed - longer recording) ----
-    Serial.println("Edge-based recording...");
-    Serial.println("Press any key to stop");
     
     rf.setCCMode(false);
     rf.setPacketFormat(3);
     rf.setRxMode();
     pinMode(2, INPUT);
     
-    // Wait for signal start
-    Serial.println("Waiting for signal...");
-    unsigned long timeout = millis();
+    Serial.print("Waiting for signal to start recording[PRESS ANY KEY TO STOP]...");
+    delayMicroseconds(1000);
     while (digitalRead(2) == LOW) {
         if (Serial.available()) {
             Serial.println("Recording cancelled");
-            rf.setCCMode(true);
-            rf.setPacketFormat(0);
-            rf.setRxMode();
             return;
         }
-        if (millis() - timeout > 5000) {
-            Serial.println("Timeout - no signal detected");
-            rf.setCCMode(true);
-            rf.setPacketFormat(0);
-            rf.setRxMode();
-            return;
-        }
-        delayMicroseconds(100);
     }
     
-    Serial.println("Signal detected! Recording edge timings...");
-    
-    // INCREASED buffer size for longer recordings
-    const int MAX_EDGES = 4096;  // Was 1024 - 4x larger
-    unsigned long* edges = (unsigned long*)malloc(MAX_EDGES * sizeof(unsigned long));
-    if (!edges) {
-        Serial.println("Memory allocation failed!");
-        rf.setCCMode(true);
-        rf.setPacketFormat(0);
-        rf.setRxMode();
-        return;
-    }
-    
-    int edgeCount = 0;
-    bool lastState = digitalRead(2);
-    unsigned long lastEdgeTime = micros();
-    unsigned long lastActivityTime = lastEdgeTime;
-    unsigned long recordingStart = millis();
-    bool signalEnded = false;
-    
-    // INCREASED silence timeout - 500ms instead of 50ms
-    const unsigned long SILENCE_TIMEOUT = 500000; // 500ms silence = end
-    
-    // Record edges until user stops OR buffer full OR signal ends OR 30s timeout
-    while (edgeCount < MAX_EDGES && !Serial.available() && !signalEnded) {
-        bool currentState = digitalRead(2);
-        
-        if (currentState != lastState) {
-            unsigned long now = micros();
-            unsigned long diff = now - lastEdgeTime;
-            if (diff > 5) { // Ignore very short glitches
-                edges[edgeCount++] = diff;
-                lastState = currentState;
-                lastEdgeTime = now;
-                lastActivityTime = now;
-            }
+    Serial.println("Recording to the buffer...");
+    byte rawBuffer[4096];
+    for (int i = 0; i < 4096; i++) {
+        byte data = 0;
+        for (int j = 7; j >= 0; j--) {
+            bitWrite(data, j, digitalRead(2));
+            delayMicroseconds(interval);
         }
-        
-        // Check for silence (signal ended) - 500ms timeout
-        if (edgeCount > 10 && (micros() - lastActivityTime > SILENCE_TIMEOUT)) {
-            signalEnded = true;
-            Serial.println("\nSignal ended (500ms silence)");
-        }
-        
-        // Progress indicator
-        if (edgeCount > 0 && edgeCount % 100 == 0) {
-            Serial.print(".");
-        }
-        
-        // 30 second timeout (was 20)
-        if (millis() - recordingStart > 30000) {
-            Serial.println("\nRecording timeout (30 seconds)");
+        rawBuffer[i] = data;
+        if (i % 10 == 0 && Serial.available()) {
+            Serial.println("Recording stopped by user.");
             break;
         }
-        
-        // REMOVED delayMicroseconds(10) - no delay for faster edge detection
     }
     
-    Serial.println();
-    
-    if (edgeCount < 4) {
-        Serial.println("Not enough edges detected - recording failed");
-        free(edges);
-        rf.setCCMode(true);
-        rf.setPacketFormat(0);
-        rf.setRxMode();
-        return;
-    }
-    
-    Serial.printf("Recorded %d edge timings\n", edgeCount);
-    
-    // Convert edges to raw bytes format
-    byte rawBuffer[4096];
-    int bytePos = 0;
-    
-    // Store edge count (2 bytes)
-    rawBuffer[bytePos++] = (edgeCount >> 8) & 0xFF;
-    rawBuffer[bytePos++] = edgeCount & 0xFF;
-    
-    // Store each edge timing as 2 bytes (MSB, LSB)
-    for (int i = 0; i < edgeCount && bytePos < 4094; i++) {
-        unsigned long duration = edges[i];
-        if (duration > 65535) duration = 65535;
-        rawBuffer[bytePos++] = (duration >> 8) & 0xFF;
-        rawBuffer[bytePos++] = duration & 0xFF;
-    }
-    
-    // Store final state (1 byte)
-    rawBuffer[bytePos++] = digitalRead(2) ? 1 : 0;
-    
-    free(edges);
-    
-    if (bytePos > 0) {
-        recorder.addRaw(rawBuffer, bytePos);
-        Serial.printf("Recorded %d bytes (edge timings)\n", bytePos);
-        
-        // Print stats
-        Serial.println("Edge timing stats:");
-        unsigned long minEdge = 0xFFFFFFFF, maxEdge = 0, totalDuration = 0;
-        int maxPrint = min(edgeCount, 20);
-        for (int i = 0; i < maxPrint; i++) {
-            unsigned long dur = (rawBuffer[2 + i*2] << 8) | rawBuffer[3 + i*2];
-            if (dur < minEdge) minEdge = dur;
-            if (dur > maxEdge) maxEdge = dur;
-            totalDuration += dur;
-        }
-        if (edgeCount > 0) {
-            Serial.printf("  Total edges: %d\n", edgeCount);
-            Serial.printf("  Min edge: %lu us\n", minEdge);
-            Serial.printf("  Max edge: %lu us\n", maxEdge);
-            if (maxPrint > 0) {
-                Serial.printf("  Avg edge (first %d): %lu us\n", maxPrint, totalDuration / maxPrint);
-            }
-        }
-        Serial.println("Recording complete!");
-    } else {
-        Serial.println("No data recorded");
-    }
-    
+    recorder.addRaw(rawBuffer, 4096);
+    Serial.println("Recording complete.");
     rf.setCCMode(true);
     rf.setPacketFormat(0);
     rf.setRxMode();
 }
+
 void CommandHandler::cmdAddRaw(const char* args) {
     int len = strlen(args);
     if (len > 0 && len <= 120) {
