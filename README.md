@@ -23,8 +23,10 @@
 
 ---
 
-## Getting Started
-<img width="2281" height="501" alt="PCB" src="https://github.com/user-attachments/assets/b69a389f-3a65-4a35-944c-d6fd187e1bf4" />
+## Planned Improvements
+### Edge-Based Recording (In Development)
 
-Download the [latest release](https://github.com/wrait8/VoidRecon/releases/latest) of the firmware.
-Check out the project [wiki](https://github.com/wrait8/VoidRecon/wiki) for a full overview of the VoidRecon.
+-  **Flipper compatibility** - Edge timings format
+-  **Interrupt-driven capture** - Accurate timing
+-  **`.sub` file import/export** - Flipper Zero compatibility
+
