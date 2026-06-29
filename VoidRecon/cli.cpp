@@ -578,7 +578,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
         rf.setRxMode();
         pinMode(2, INPUT);
         
-        Serial.println("Waiting for signal...");
+        Serial.print("Waiting for signal to start recording[PRESS ANY KEY TO STOP]...");
         delayMicroseconds(1000);
         while (digitalRead(2) == LOW) {
             if (Serial.available()) {
@@ -590,7 +590,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
             }
         }
         
-        Serial.println("Recording...");
+        Serial.print("Recording RAW to the buffer...");
         byte rawBuffer[4096];
         int i = 0;
         for (i = 0; i < 4096; i++) {
@@ -613,7 +613,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
         return;
     }
     
-    // ---- EDGE-BASED RECORDING (simple edge detection) ----
+    // ---- EDGE-BASED RECORDING (fixed - longer recording) ----
     Serial.println("Edge-based recording...");
     Serial.println("Press any key to stop");
     
@@ -645,8 +645,8 @@ void CommandHandler::cmdRecRaw(const char* args) {
     
     Serial.println("Signal detected! Recording edge timings...");
     
-    // Record edges directly as bytes
-    const int MAX_EDGES = 1024;
+    // INCREASED buffer size for longer recordings
+    const int MAX_EDGES = 4096;  // Was 1024 - 4x larger
     unsigned long* edges = (unsigned long*)malloc(MAX_EDGES * sizeof(unsigned long));
     if (!edges) {
         Serial.println("Memory allocation failed!");
@@ -663,7 +663,10 @@ void CommandHandler::cmdRecRaw(const char* args) {
     unsigned long recordingStart = millis();
     bool signalEnded = false;
     
-    // Record edges until user stops OR buffer full OR signal ends OR 20s timeout
+    // INCREASED silence timeout - 500ms instead of 50ms
+    const unsigned long SILENCE_TIMEOUT = 500000; // 500ms silence = end
+    
+    // Record edges until user stops OR buffer full OR signal ends OR 30s timeout
     while (edgeCount < MAX_EDGES && !Serial.available() && !signalEnded) {
         bool currentState = digitalRead(2);
         
@@ -678,24 +681,24 @@ void CommandHandler::cmdRecRaw(const char* args) {
             }
         }
         
-        // Check for 50ms silence (signal ended)
-        if (edgeCount > 10 && (micros() - lastActivityTime > 50000)) {
+        // Check for silence (signal ended) - 500ms timeout
+        if (edgeCount > 10 && (micros() - lastActivityTime > SILENCE_TIMEOUT)) {
             signalEnded = true;
-            Serial.println("\nSignal ended");
+            Serial.println("\nSignal ended (500ms silence)");
         }
         
         // Progress indicator
-        if (edgeCount > 0 && edgeCount % 50 == 0) {
+        if (edgeCount > 0 && edgeCount % 100 == 0) {
             Serial.print(".");
         }
         
-        // 20 second timeout
-        if (millis() - recordingStart > 20000) {
-            Serial.println("\nRecording timeout (20 seconds)");
+        // 30 second timeout (was 20)
+        if (millis() - recordingStart > 30000) {
+            Serial.println("\nRecording timeout (30 seconds)");
             break;
         }
         
-        delayMicroseconds(10);
+        // REMOVED delayMicroseconds(10) - no delay for faster edge detection
     }
     
     Serial.println();
@@ -711,8 +714,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
     
     Serial.printf("Recorded %d edge timings\n", edgeCount);
     
-    // Convert edges to raw bytes format (compatible with recorder.addRaw)
-    // Format: [edgeCount MSB][edgeCount LSB][edge1 MSB][edge1 LSB]...
+    // Convert edges to raw bytes format
     byte rawBuffer[4096];
     int bytePos = 0;
     
@@ -723,7 +725,6 @@ void CommandHandler::cmdRecRaw(const char* args) {
     // Store each edge timing as 2 bytes (MSB, LSB)
     for (int i = 0; i < edgeCount && bytePos < 4094; i++) {
         unsigned long duration = edges[i];
-        // Clamp to 16-bit
         if (duration > 65535) duration = 65535;
         rawBuffer[bytePos++] = (duration >> 8) & 0xFF;
         rawBuffer[bytePos++] = duration & 0xFF;
