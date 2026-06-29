@@ -59,7 +59,7 @@ void loop() {
             buffer[length] = '\0';
             if (length > 0 && !cli.isChatMode()) {
                 cli.processLine(buffer);
-                Serial.print("> ");
+                Serial.print("vd1 > ");
             }
             length = 0;
         }
