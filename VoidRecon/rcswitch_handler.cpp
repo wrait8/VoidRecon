@@ -1,5 +1,5 @@
-// rcswitch_handler.cpp
 #include "rcswitch_handler.h"
+#include <ELECHOUSE_CC1101_SRC_DRV.h>
 
 RCSwitchHandler::RCSwitchHandler() 
     : initialized(false), gdoPin(2), lastCode(0), lastBits(0), lastDelay(0), lastProtocol(0) {
@@ -15,11 +15,26 @@ void RCSwitchHandler::init(int gdoPin) {
 
 void RCSwitchHandler::enableReceive() {
     if (!initialized) return;
+    
+    // Setup CC1101 for RCSwitch (like original code)
+    ELECHOUSE_cc1101.Init();
+    ELECHOUSE_cc1101.SetRx();
+    ELECHOUSE_cc1101.setCCMode(0);
+    ELECHOUSE_cc1101.setPktFormat(3);
+    ELECHOUSE_cc1101.SetRx();
+    pinMode(gdoPin, INPUT);
+    
     mySwitch.enableReceive(gdoPin);
 }
 
 void RCSwitchHandler::enableTransmit() {
     if (!initialized) return;
+    
+    // Setup CC1101 for transmit
+    ELECHOUSE_cc1101.setCCMode(0);
+    ELECHOUSE_cc1101.setPktFormat(3);
+    ELECHOUSE_cc1101.SetTx();
+    
     mySwitch.enableTransmit(gdoPin);
 }
 
@@ -59,20 +74,33 @@ void RCSwitchHandler::resetAvailable() {
 
 void RCSwitchHandler::send(unsigned long code, unsigned int bits) {
     if (!initialized) return;
+    
+    // Setup CC1101 for transmission
+    ELECHOUSE_cc1101.setCCMode(0);
+    ELECHOUSE_cc1101.setPktFormat(3);
+    ELECHOUSE_cc1101.SetTx();
+    mySwitch.enableTransmit(gdoPin);
+    delay(200);
+    
     mySwitch.send(code, bits);
+    
+    // Restore CC1101
+    ELECHOUSE_cc1101.setCCMode(1);
+    ELECHOUSE_cc1101.setPktFormat(0);
+    ELECHOUSE_cc1101.SetTx();
 }
 
 void RCSwitchHandler::send(unsigned long code, unsigned int bits, unsigned int delay) {
     if (!initialized) return;
     mySwitch.setPulseLength(delay);
-    mySwitch.send(code, bits);
+    send(code, bits);
 }
 
 void RCSwitchHandler::send(unsigned long code, unsigned int bits, unsigned int delay, unsigned int protocol) {
     if (!initialized) return;
     mySwitch.setProtocol(protocol);
     mySwitch.setPulseLength(delay);
-    mySwitch.send(code, bits);
+    send(code, bits);
 }
 
 void RCSwitchHandler::setProtocol(unsigned int protocol) {
