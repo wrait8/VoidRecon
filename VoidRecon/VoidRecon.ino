@@ -32,15 +32,6 @@ void setup() {
     
     // Initialize command handler
     cli.init();
-    
-    // Print banner
-    Serial.println(R"raw(
-    ╔══════════════════════════════════════════════════════════╗
-    ║                    CC1101 Radio Tool                     ║
-    ║                   Command Line Interface                 ║
-    ╚══════════════════════════════════════════════════════════╝
-    )raw");
-    
     Serial.println("Type 'help' for available commands");
     Serial.print("> ");
 }
