@@ -27,6 +27,8 @@ public:
     void setPulseLength(unsigned int delay);
     void setRepeatTransmit(int repeats);
     int getReceivedRawData(unsigned int* raw);
+    static const char* bin2tristate(const char* bin);
+    static char* dec2binWzerofill(unsigned long Dec, unsigned int bitLength);
     
 private:
     RCSwitch mySwitch;
@@ -38,8 +40,7 @@ private:
     unsigned int lastDelay;
     unsigned int lastProtocol;
     
-    static const char* bin2tristate(const char* bin);
-    static char* dec2binWzerofill(unsigned long Dec, unsigned int bitLength);
+
 };
 
 #endif
