@@ -54,7 +54,7 @@ void CommandHandler::asciiToHex(byte* hex, const byte* ascii, int len) {
 
 void CommandHandler::printHelp() {
     Serial.println(F(
-        "=== CC1101 Control Commands ===\n\n"
+        "=== Void Recon ===\n\n"
         "MODULATION & RF SETTINGS:\n"
         "  mod <0-4>      - Set modulation (0=2FSK,1=GFSK,2=ASK/OOK,3=4FSK,4=MSK)\n"
         "  freq <MHz>     - Set frequency (300-348, 387-464, 779-928 MHz)\n"
@@ -104,6 +104,7 @@ void CommandHandler::printHelp() {
         "  playraw <us>   - Replay raw data\n"
         "  saveraw        - Save raw buffer to EEPROM\n"
         "  loadraw        - Load raw buffer from EEPROM\n\n"
+        "  showsig        - Show current signal in memory\n" 
         "FIXED CODE:\n"
         "  recsig         - Record fixed code remote\n"
         "  playsig        - Play fixed code from buffer\n"
@@ -199,15 +200,16 @@ void CommandHandler::processLine(const char* line) {
     else if (strcmp(cmd, "rxraw") == 0) cmdRxRaw(args);
     else if (strcmp(cmd, "recraw") == 0) cmdRecRaw(args);
     else if (strcmp(cmd, "addraw") == 0) cmdAddRaw(args);
-    else if (strcmp(cmd, "showraw") == 0) cmdShowRaw();
-    else if (strcmp(cmd, "showbit") == 0) cmdShowBits();
     else if (strcmp(cmd, "playraw") == 0) cmdPlayRaw(args);
     else if (strcmp(cmd, "saveraw") == 0) cmdSaveRaw();
     else if (strcmp(cmd, "loadraw") == 0) cmdLoadRaw();
+    else if (strcmp(cmd, "showraw") == 0) cmdShowRaw();
+    else if (strcmp(cmd, "showbit") == 0) cmdShowBits();
     else if (strcmp(cmd, "recsig") == 0) cmdRecSig();
     else if (strcmp(cmd, "playsig") == 0) cmdPlaySig();
     else if (strcmp(cmd, "savesig") == 0) cmdSaveSig();
     else if (strcmp(cmd, "loadsig") == 0) cmdLoadSig();
+    else if (strcmp(cmd, "showsig") == 0) cmdShowSig();
     else if (strcmp(cmd, "echo") == 0) cmdEcho(args);
     else if (strcmp(cmd, "stop") == 0) cmdStop();
     else if (strcmp(cmd, "reset") == 0) cmdReset();
@@ -563,50 +565,206 @@ void CommandHandler::cmdRxRaw(const char* args) {
     rf.setPacketFormat(0);
     rf.setRxMode();
 }
-
 void CommandHandler::cmdRecRaw(const char* args) {
-    int interval = atoi(args);
-    if (interval <= 0) {
-        Serial.println("Invalid interval");
+    int interval = 0;
+    if (strlen(args) > 0) {
+        interval = atoi(args);
+    }
+    
+    // ---- INTERVAL-BASED RECORDING (simple bit-banging) ----
+    if (interval > 0) {
+        rf.setCCMode(false);
+        rf.setPacketFormat(3);
+        rf.setRxMode();
+        pinMode(2, INPUT);
+        
+        Serial.println("Waiting for signal...");
+        delayMicroseconds(1000);
+        while (digitalRead(2) == LOW) {
+            if (Serial.available()) {
+                Serial.println("Recording cancelled");
+                rf.setCCMode(true);
+                rf.setPacketFormat(0);
+                rf.setRxMode();
+                return;
+            }
+        }
+        
+        Serial.println("Recording...");
+        byte rawBuffer[4096];
+        int i = 0;
+        for (i = 0; i < 4096; i++) {
+            byte data = 0;
+            for (int j = 7; j >= 0; j--) {
+                bitWrite(data, j, digitalRead(2));
+                delayMicroseconds(interval);
+            }
+            rawBuffer[i] = data;
+            if (i % 10 == 0 && Serial.available()) {
+                Serial.println("Recording stopped by user");
+                break;
+            }
+        }
+        recorder.addRaw(rawBuffer, i);
+        rf.setCCMode(true);
+        rf.setPacketFormat(0);
+        rf.setRxMode();
+        Serial.println("Recording complete!");
         return;
     }
+    
+    // ---- EDGE-BASED RECORDING (simple edge detection) ----
+    Serial.println("Edge-based recording...");
+    Serial.println("Press any key to stop");
     
     rf.setCCMode(false);
     rf.setPacketFormat(3);
     rf.setRxMode();
     pinMode(2, INPUT);
     
+    // Wait for signal start
     Serial.println("Waiting for signal...");
-    delayMicroseconds(1000);
+    unsigned long timeout = millis();
     while (digitalRead(2) == LOW) {
         if (Serial.available()) {
             Serial.println("Recording cancelled");
+            rf.setCCMode(true);
+            rf.setPacketFormat(0);
+            rf.setRxMode();
             return;
         }
+        if (millis() - timeout > 5000) {
+            Serial.println("Timeout - no signal detected");
+            rf.setCCMode(true);
+            rf.setPacketFormat(0);
+            rf.setRxMode();
+            return;
+        }
+        delayMicroseconds(100);
     }
     
-    Serial.println("Recording...");
-    byte rawBuffer[4096];
-    for (int i = 0; i < 4096; i++) {
-        byte data = 0;
-        for (int j = 7; j >= 0; j--) {
-            bitWrite(data, j, digitalRead(2));
-            delayMicroseconds(interval);
+    Serial.println("Signal detected! Recording edge timings...");
+    
+    // Record edges directly as bytes
+    const int MAX_EDGES = 1024;
+    unsigned long* edges = (unsigned long*)malloc(MAX_EDGES * sizeof(unsigned long));
+    if (!edges) {
+        Serial.println("Memory allocation failed!");
+        rf.setCCMode(true);
+        rf.setPacketFormat(0);
+        rf.setRxMode();
+        return;
+    }
+    
+    int edgeCount = 0;
+    bool lastState = digitalRead(2);
+    unsigned long lastEdgeTime = micros();
+    unsigned long lastActivityTime = lastEdgeTime;
+    unsigned long recordingStart = millis();
+    bool signalEnded = false;
+    
+    // Record edges until user stops OR buffer full OR signal ends OR 20s timeout
+    while (edgeCount < MAX_EDGES && !Serial.available() && !signalEnded) {
+        bool currentState = digitalRead(2);
+        
+        if (currentState != lastState) {
+            unsigned long now = micros();
+            unsigned long diff = now - lastEdgeTime;
+            if (diff > 5) { // Ignore very short glitches
+                edges[edgeCount++] = diff;
+                lastState = currentState;
+                lastEdgeTime = now;
+                lastActivityTime = now;
+            }
         }
-        rawBuffer[i] = data;
-        if (i % 10 == 0 && Serial.available()) {
-            Serial.println("Recording stopped by user");
+        
+        // Check for 50ms silence (signal ended)
+        if (edgeCount > 10 && (micros() - lastActivityTime > 50000)) {
+            signalEnded = true;
+            Serial.println("\nSignal ended");
+        }
+        
+        // Progress indicator
+        if (edgeCount > 0 && edgeCount % 50 == 0) {
+            Serial.print(".");
+        }
+        
+        // 20 second timeout
+        if (millis() - recordingStart > 20000) {
+            Serial.println("\nRecording timeout (20 seconds)");
             break;
         }
+        
+        delayMicroseconds(10);
     }
     
-    recorder.addRaw(rawBuffer, 4096);
-    Serial.println("Recording complete");
+    Serial.println();
+    
+    if (edgeCount < 4) {
+        Serial.println("Not enough edges detected - recording failed");
+        free(edges);
+        rf.setCCMode(true);
+        rf.setPacketFormat(0);
+        rf.setRxMode();
+        return;
+    }
+    
+    Serial.printf("Recorded %d edge timings\n", edgeCount);
+    
+    // Convert edges to raw bytes format (compatible with recorder.addRaw)
+    // Format: [edgeCount MSB][edgeCount LSB][edge1 MSB][edge1 LSB]...
+    byte rawBuffer[4096];
+    int bytePos = 0;
+    
+    // Store edge count (2 bytes)
+    rawBuffer[bytePos++] = (edgeCount >> 8) & 0xFF;
+    rawBuffer[bytePos++] = edgeCount & 0xFF;
+    
+    // Store each edge timing as 2 bytes (MSB, LSB)
+    for (int i = 0; i < edgeCount && bytePos < 4094; i++) {
+        unsigned long duration = edges[i];
+        // Clamp to 16-bit
+        if (duration > 65535) duration = 65535;
+        rawBuffer[bytePos++] = (duration >> 8) & 0xFF;
+        rawBuffer[bytePos++] = duration & 0xFF;
+    }
+    
+    // Store final state (1 byte)
+    rawBuffer[bytePos++] = digitalRead(2) ? 1 : 0;
+    
+    free(edges);
+    
+    if (bytePos > 0) {
+        recorder.addRaw(rawBuffer, bytePos);
+        Serial.printf("Recorded %d bytes (edge timings)\n", bytePos);
+        
+        // Print stats
+        Serial.println("Edge timing stats:");
+        unsigned long minEdge = 0xFFFFFFFF, maxEdge = 0, totalDuration = 0;
+        int maxPrint = min(edgeCount, 20);
+        for (int i = 0; i < maxPrint; i++) {
+            unsigned long dur = (rawBuffer[2 + i*2] << 8) | rawBuffer[3 + i*2];
+            if (dur < minEdge) minEdge = dur;
+            if (dur > maxEdge) maxEdge = dur;
+            totalDuration += dur;
+        }
+        if (edgeCount > 0) {
+            Serial.printf("  Total edges: %d\n", edgeCount);
+            Serial.printf("  Min edge: %lu us\n", minEdge);
+            Serial.printf("  Max edge: %lu us\n", maxEdge);
+            if (maxPrint > 0) {
+                Serial.printf("  Avg edge (first %d): %lu us\n", maxPrint, totalDuration / maxPrint);
+            }
+        }
+        Serial.println("Recording complete!");
+    } else {
+        Serial.println("No data recorded");
+    }
+    
     rf.setCCMode(true);
     rf.setPacketFormat(0);
     rf.setRxMode();
 }
-
 void CommandHandler::cmdAddRaw(const char* args) {
     int len = strlen(args);
     if (len > 0 && len <= 120) {
@@ -645,9 +803,12 @@ void CommandHandler::cmdLoadRaw() {
 }
 
 void CommandHandler::cmdRecSig() {
+    // Setup like original code
+    ELECHOUSE_cc1101.Init();
+    ELECHOUSE_cc1101.SetRx();
     rcSwitch.enableReceive();
-    Serial.println("Waiting for fixed-code signal...");
-    Serial.println("Press any key to stop");
+    
+    Serial.println("Waiting for radio signal [PRESS ANY KEY TO STOP]...");
     
     while (!Serial.available()) {
         if (rcSwitch.available()) {
@@ -656,8 +817,41 @@ void CommandHandler::cmdRecSig() {
             unsigned int delay = rcSwitch.getDelay();
             unsigned int protocol = rcSwitch.getProtocol();
             
-            Serial.printf("Code: %lu, Bits: %u, Delay: %u, Protocol: %u\n", 
-                         code, bits, delay, protocol);
+            // Format output like original
+            const char* b = RCSwitchHandler::dec2binWzerofill(code, bits);
+            Serial.print("Decimal: ");
+            Serial.print(code);
+            Serial.print(" (");
+            Serial.print(bits);
+            Serial.print("Bit) Binary: ");
+            Serial.print(b);
+            Serial.print(" Tri-State: ");
+            Serial.print(RCSwitchHandler::bin2tristate(b));
+            Serial.print(" PulseLength: ");
+            Serial.print(delay);
+            Serial.print(" microseconds");
+            Serial.print(" Protocol: ");
+            Serial.println(protocol);
+            
+            // Get raw data
+            unsigned int raw[128];
+            int rawLen = rcSwitch.getReceivedRawData(raw);
+            Serial.print("Raw data: ");
+            for (int i = 0; i < rawLen && raw[i] != 0; i++) {
+                Serial.print(raw[i]);
+                Serial.print(",");
+            }
+            Serial.println();
+            Serial.println();
+            
+            // Store in memory (but NOT EEPROM - user must save manually)
+            lastSigCode = code;
+            lastSigBits = bits;
+            lastSigDelay = delay;
+            lastSigProtocol = protocol;
+            
+            Serial.println("Signal received! Use 'savesig' to save to EEPROM.");
+            
             rcSwitch.resetAvailable();
             break;
         }
@@ -666,28 +860,114 @@ void CommandHandler::cmdRecSig() {
     rcSwitch.disable();
 }
 
-void CommandHandler::cmdPlaySig() {
-    // Play the last recorded signal from EEPROM
-    Serial.println("Playing fixed-code signal...");
-    // This would need to load from EEPROM first
-    // For now, just a placeholder
-    Serial.println("Use 'loadsig' first to load saved signal");
-}
-
 void CommandHandler::cmdSaveSig() {
-    Serial.println("Saving fixed-code signal to EEPROM...");
-    // Save to EEPROM at offset 0
-    // This is a placeholder - full implementation would save code, bits, delay, protocol
-    Serial.println("Saved successfully");
+    if (lastSigCode == 0 && lastSigBits == 0) {
+        Serial.println("No signal in memory. Use 'recsig' first.");
+        return;
+    }
+    
+    Serial.println("Saving signal to EEPROM...");
+    
+    EEPROM.write(0, (byte)(lastSigCode >> 24));
+    EEPROM.write(1, (byte)(lastSigCode >> 16));
+    EEPROM.write(2, (byte)(lastSigCode >> 8));
+    EEPROM.write(3, (byte)(lastSigCode));
+    EEPROM.write(4, (byte)(lastSigBits >> 8));
+    EEPROM.write(5, (byte)(lastSigBits));
+    EEPROM.write(6, (byte)(lastSigDelay >> 8));
+    EEPROM.write(7, (byte)(lastSigDelay));
+    EEPROM.write(8, (byte)(lastSigProtocol >> 8));
+    EEPROM.write(9, (byte)(lastSigProtocol));
+    EEPROM.commit();
+    
+    Serial.printf("Saved: Code=%lu, Bits=%u, Delay=%u, Protocol=%u\n", 
+                  lastSigCode, lastSigBits, lastSigDelay, lastSigProtocol);
+    Serial.println("Saved successfully!");
 }
 
 void CommandHandler::cmdLoadSig() {
-    Serial.println("Loading fixed-code signal from EEPROM...");
     // Load from EEPROM
-    // This is a placeholder
-    Serial.println("Loaded successfully");
+    unsigned long code = 0;
+    unsigned int bits = 0, delay = 0, protocol = 0;
+    
+    code = ((unsigned long)EEPROM.read(0) << 24) |
+           ((unsigned long)EEPROM.read(1) << 16) |
+           ((unsigned long)EEPROM.read(2) << 8) |
+           (unsigned long)EEPROM.read(3);
+    bits = ((unsigned int)EEPROM.read(4) << 8) |
+           (unsigned int)EEPROM.read(5);
+    delay = ((unsigned int)EEPROM.read(6) << 8) |
+            (unsigned int)EEPROM.read(7);
+    protocol = ((unsigned int)EEPROM.read(8) << 8) |
+               (unsigned int)EEPROM.read(9);
+    
+    if (code == 0 && bits == 0) {
+        Serial.println("No signal saved in EEPROM. Use 'recsig' then 'savesig' first.");
+        return;
+    }
+    
+    // Store in memory
+    lastSigCode = code;
+    lastSigBits = bits;
+    lastSigDelay = delay;
+    lastSigProtocol = protocol;
+    
+    Serial.println("Loaded signal from EEPROM:");
+    Serial.printf("Code: %lu, Bits: %u, Delay: %u, Protocol: %u\n", 
+                  code, bits, delay, protocol);
 }
 
+void CommandHandler::cmdPlaySig() {
+    if (lastSigCode == 0 && lastSigBits == 0) {
+        Serial.println("No signal loaded. Use 'recsig' or 'loadsig' first.");
+        return;
+    }
+    
+    Serial.print("Sending signal: ");
+    Serial.printf("Code: %lu, Bits: %u, Delay: %u, Protocol: %u\n", 
+                  lastSigCode, lastSigBits, lastSigDelay, lastSigProtocol);
+    
+    // Setup CC1101 like original
+    ELECHOUSE_cc1101.setCCMode(0);
+    ELECHOUSE_cc1101.setPktFormat(3);
+    ELECHOUSE_cc1101.SetTx();
+    rcSwitch.enableTransmit();
+    delay(200);
+    
+    rcSwitch.setProtocol(lastSigProtocol);
+    rcSwitch.setPulseLength(lastSigDelay);
+    rcSwitch.setRepeatTransmit(5);
+    rcSwitch.send(lastSigCode, lastSigBits);
+    
+    // Restore CC1101
+    ELECHOUSE_cc1101.setCCMode(1);
+    ELECHOUSE_cc1101.setPktFormat(0);
+    ELECHOUSE_cc1101.SetTx();
+    
+    Serial.println("Signal sent!");
+}
+void CommandHandler::cmdShowSig() {
+    if (lastSigCode == 0 && lastSigBits == 0) {
+        Serial.println("No signal loaded in memory.");
+        Serial.println("Use 'recsig' to receive a signal, or 'loadsig' to load from EEPROM.");
+        return;
+    }
+    
+    Serial.println("=== Current Signal in Memory ===");
+    Serial.printf("  Code:     %lu\n", lastSigCode);
+    Serial.printf("  Bits:     %u\n", lastSigBits);
+    Serial.printf("  Delay:    %u us\n", lastSigDelay);
+    Serial.printf("  Protocol: %u\n", lastSigProtocol);
+    
+    // Show binary representation
+    const char* b = RCSwitchHandler::dec2binWzerofill(lastSigCode, lastSigBits);
+    Serial.printf("  Binary:   %s\n", b);
+    Serial.printf("  Tri-State: %s\n", RCSwitchHandler::bin2tristate(b));
+    
+    // Show raw data (if available)
+    Serial.println("  Raw data: (not stored in this format)");
+    Serial.println("================================");
+}
 void CommandHandler::cmdEcho(const char* args) {
     echoEnabled = atoi(args) == 1;
     Serial.printf("Echo: %s\n", echoEnabled ? "ON" : "OFF");
