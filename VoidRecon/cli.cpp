@@ -588,7 +588,8 @@ void CommandHandler::cmdRecRaw(const char* args) {
     
     Serial.println("Recording to the buffer...");
     byte rawBuffer[4096];
-    for (int i = 0; i < 4096; i++) {
+    int i = 0;
+    for (i = 0; i < 4096; i++) {
         byte data = 0;
         for (int j = 7; j >= 0; j--) {
             bitWrite(data, j, digitalRead(2));
@@ -601,7 +602,7 @@ void CommandHandler::cmdRecRaw(const char* args) {
         }
     }
     
-    recorder.addRaw(rawBuffer, 4096);
+    recorder.addRaw(rawBuffer, i);
     Serial.println("Recording complete.");
     rf.setCCMode(true);
     rf.setPacketFormat(0);
