@@ -473,8 +473,8 @@
     scene.background = new THREE.Color(0x0b0c0e);
 
     const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
-    camera.position.set(4, 3.5, 8);
-    camera.lookAt(0, 1.5, 0);
+    camera.position.set(5, 3, 9);
+    camera.lookAt(0, 2, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
@@ -490,14 +490,15 @@
     controls.dampingFactor = 0.05;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.8;
-    controls.minDistance = 3;
-    controls.maxDistance = 15;
-    controls.target.set(0, 1.5, 0);
-    controls.maxPolarAngle = Math.PI / 2.1;
-    controls.minPolarAngle = 0.1;
+    controls.minDistance = 2;
+    controls.maxDistance = 20;
+    controls.target.set(0, 2, 0);
+    // No polar angle restriction - you can see from any angle including bottom
+    controls.maxPolarAngle = Math.PI;
+    controls.minPolarAngle = 0;
 
     // ── Lights ──
-    const ambient = new THREE.AmbientLight(0x404060, 0.4);
+    const ambient = new THREE.AmbientLight(0x404060, 0.5);
     scene.add(ambient);
 
     const keyLight = new THREE.DirectionalLight(0xffeedd, 2.5);
@@ -522,36 +523,25 @@
     rimLight.position.set(-3, 1, -6);
     scene.add(rimLight);
 
+    const bottomLight = new THREE.DirectionalLight(0x6effe0, 0.3);
+    bottomLight.position.set(0, -5, 0);
+    scene.add(bottomLight);
+
     const hemiLight = new THREE.HemisphereLight(0x6effe0, 0x0b0c0e, 0.3);
     scene.add(hemiLight);
 
-    // ── Ground plane ──
-    const groundGeometry = new THREE.PlaneGeometry(12, 12);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x0b0c0e,
-      roughness: 0.8,
-      metalness: 0.1,
-      transparent: true,
-      opacity: 0.9,
-    });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.01;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // ── Grid ──
+    // ── Subtle grid (floating, no ground plane) ──
     const gridHelper = new THREE.GridHelper(8, 24, 0x6effe0, 0x1a2a3a);
-    gridHelper.position.y = 0.001;
+    gridHelper.position.y = -0.5;
     gridHelper.material.transparent = true;
-    gridHelper.material.opacity = 0.12;
+    gridHelper.material.opacity = 0.08;
     scene.add(gridHelper);
 
-    // ── Load PCB model ──
+    // ── Load REAL PCB model ──
     const loader = new GLTFLoader();
     const modelPath = 'Models/voidrecon-pcb.glb';
 
-    console.log('🔄 Loading PCB model from:', modelPath);
+    console.log('🔄 Loading REAL PCB model from:', modelPath);
 
     const loadingDiv = document.createElement('div');
     loadingDiv.style.cssText = `
@@ -586,12 +576,8 @@
         
         model.scale.set(scale, scale, scale);
         
-        // Position: centered, standing vertically (rotate 90° around X axis)
-        // First, find the bottom of the model (where USB connector is)
-        const scaledCenter = center.clone().multiplyScalar(scale);
-        const minY = box.min.y * scale;
-        
-        // Rotate 90° around X to stand vertically (like a USB dongle)
+        // Position: standing vertically (USB dongle style)
+        // Rotate 90° around X to stand vertically
         model.rotation.x = -Math.PI / 2;
         
         // Reposition after rotation
@@ -601,7 +587,7 @@
         
         model.position.x = -newCenter.x;
         model.position.z = -newCenter.z;
-        model.position.y = -newMinY + 0.02; // Sit on ground
+        model.position.y = -newMinY + 0.5; // Lift it up slightly
         
         // Enable shadows
         model.traverse((node) => {
@@ -616,10 +602,10 @@
         });
         
         scene.add(model);
-        console.log('✅ PCB model loaded and rotated vertically!');
+        console.log('✅ REAL PCB model loaded successfully!');
         console.log('📐 Model dimensions:', size);
         console.log('📏 Scale applied:', scale.toFixed(3));
-        console.log('🔄 Rotation: standing vertically (USB dongle style)');
+        console.log('📍 Position:', model.position);
       },
       (progress) => {
         const percent = (progress.loaded / progress.total * 100).toFixed(0);
@@ -637,7 +623,7 @@
     function createFallbackModel() {
       const group = new THREE.Group();
       
-      // Main PCB - standing vertically (rotated 90°)
+      // Main PCB - standing vertically
       const boardGeo = new THREE.BoxGeometry(2.5, 0.12, 3.8);
       const boardMat = new THREE.MeshStandardMaterial({ 
         color: 0x1a2a2a, 
@@ -650,7 +636,7 @@
       board.receiveShadow = true;
       group.add(board);
 
-      // USB connector at bottom (gold)
+      // USB connector at bottom
       const usbGeo = new THREE.BoxGeometry(0.9, 0.15, 0.5);
       const usbMat = new THREE.MeshStandardMaterial({ 
         color: 0xccaa44, 
@@ -673,7 +659,7 @@
       shield.position.set(0, 0.04, 0);
       group.add(shield);
 
-      // Traces (vertical)
+      // Traces
       const traceMat = new THREE.MeshStandardMaterial({ 
         color: 0x6effe0, 
         emissive: 0x6effe0, 
@@ -688,7 +674,7 @@
         group.add(trace);
       }
 
-      // ESP32 chip (center)
+      // ESP32 chip
       const chipGeo = new THREE.BoxGeometry(0.8, 0.06, 0.8);
       const chipMat = new THREE.MeshStandardMaterial({ 
         color: 0x1a1a2a, 
@@ -747,6 +733,8 @@
         group.add(led);
       }
 
+      // Position the whole group floating
+      group.position.y = 0.5;
       scene.add(group);
     }
 
