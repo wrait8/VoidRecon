@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Void Recon — sub‑1 GHz Swiss Army knife. Sniff, record, replay, and brute‑force signals with ESP32 and CC1101." />
-  <title>Void Recon · WRAITH</title>
+  <title>Void Recon · wrait8</title>
   <meta name="theme-color" content="#0b0c0e" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hackernoon/pixel-icon-library/fonts/iconfont.css" />
 
-  <!-- Three.js -->
   <script type="importmap">
     {
       "imports": {
@@ -35,13 +34,12 @@
     a { color: #6effe0; text-decoration: none; }
     a:hover { color: #a0fff0; }
 
-    /* ── navbar ── */
     .nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(11, 12, 14, 0.8);
-      backdrop-filter: blur(12px);
+      background: rgba(11, 12, 14, 0.85);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255,255,255,0.04);
       padding: 0.6rem 1.5rem;
     }
@@ -82,7 +80,7 @@
       font-weight: 500;
     }
     .nav__links a {
-      color: rgba(220,230,235,0.6);
+      color: rgba(220,230,235,0.5);
       border-bottom: 1px solid transparent;
       padding-bottom: 0.2rem;
       transition: 0.2s;
@@ -103,7 +101,7 @@
     }
     .btn--ghost {
       background: transparent;
-      color: rgba(220,230,235,0.7);
+      color: rgba(220,230,235,0.6);
       border-color: rgba(255,255,255,0.06);
     }
     .btn--ghost:hover { background: rgba(255,255,255,0.04); color: #fff; }
@@ -116,14 +114,15 @@
     .btn--sm { padding: 0.3rem 1rem; font-size: 0.8rem; }
     .nav__burger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; }
 
-    /* ── hero ── */
     .hero {
       position: relative;
       min-height: 90vh;
       display: flex;
       align-items: center;
       padding: 2rem 1.5rem;
-      background: radial-gradient(ellipse at 30% 20%, rgba(110,255,224,0.04) 0%, transparent 60%);
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(110,255,224,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(110,255,224,0.02) 0%, transparent 40%);
     }
     .hero__inner {
       max-width: 1300px;
@@ -142,7 +141,7 @@
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: rgba(200,210,215,0.5);
+      color: rgba(200,210,215,0.4);
     }
     .hero__kicker-dot { display: inline-block; width: 8px; height: 8px; background: #6effe0; border-radius: 50%; }
     .hero__title {
@@ -156,8 +155,9 @@
     .hero__title .accent { color: #6effe0; }
     .hero__sub {
       font-size: 1.15rem;
-      color: rgba(200,210,215,0.7);
+      color: rgba(200,210,215,0.65);
       max-width: 500px;
+      line-height: 1.6;
     }
     .hero__cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.4rem; }
     .hero__stats {
@@ -169,11 +169,11 @@
       border-top: 1px solid rgba(255,255,255,0.04);
     }
     .stat { display: flex; align-items: center; gap: 0.6rem; }
-    .stat__icon { font-size: 1.2rem; color: rgba(200,210,215,0.3); }
+    .stat__icon { font-size: 1.2rem; color: rgba(200,210,215,0.25); }
     .stat__v { font-weight: 600; color: #fff; font-family: 'JetBrains Mono', monospace; }
-    .stat__l { font-size: 0.75rem; color: rgba(200,210,215,0.4); margin-left: 0.2rem; }
+    .stat__l { font-size: 0.75rem; color: rgba(200,210,215,0.35); margin-left: 0.2rem; }
     .hero__visual {
-      background: rgba(18,18,18,0.6);
+      background: rgba(18,18,18,0.5);
       border-radius: 24px;
       border: 1px solid rgba(255,255,255,0.04);
       padding: 1rem;
@@ -195,23 +195,22 @@
       bottom: 12px;
       right: 16px;
       font-size: 0.7rem;
-      color: rgba(200,210,215,0.2);
+      color: rgba(200,210,215,0.15);
       display: flex;
       align-items: center;
       gap: 0.3rem;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.4);
       padding: 0.2rem 0.8rem;
       border-radius: 20px;
       backdrop-filter: blur(4px);
       pointer-events: none;
     }
 
-    /* ── sections ── */
     .section {
       padding: 4rem 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(255,255,255,0.03);
     }
-    .section--alt { background: rgba(255,255,255,0.015); }
+    .section--alt { background: rgba(255,255,255,0.012); }
     .section__inner { max-width: 1200px; margin: 0 auto; }
     .eyebrow {
       display: inline-flex;
@@ -221,10 +220,10 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: #6effe0;
-      background: rgba(110,255,224,0.06);
+      background: rgba(110,255,224,0.05);
       padding: 0.2rem 0.8rem;
       border-radius: 40px;
-      border: 1px solid rgba(110,255,224,0.08);
+      border: 1px solid rgba(110,255,224,0.06);
     }
     .section__title {
       font-family: 'Space Mono', monospace;
@@ -237,12 +236,11 @@
     .section__title .accent { color: #6effe0; }
     .section__sub {
       font-size: 1.05rem;
-      color: rgba(200,210,215,0.6);
+      color: rgba(200,210,215,0.5);
       max-width: 600px;
       margin-bottom: 2rem;
     }
 
-    /* cards */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -250,93 +248,64 @@
       margin: 1.5rem 0;
     }
     .card {
-      background: rgba(18,18,18,0.7);
+      background: rgba(18,18,18,0.6);
       backdrop-filter: blur(4px);
       border: 1px solid rgba(255,255,255,0.04);
       padding: 1.8rem 1.5rem;
       border-radius: 16px;
       transition: 0.25s ease;
     }
-    .card:hover { border-color: rgba(110,255,224,0.15); transform: translateY(-4px); }
-    .card__icon { font-size: 1.8rem; color: #6effe0; opacity: 0.7; margin-bottom: 0.6rem; }
+    .card:hover { border-color: rgba(110,255,224,0.12); transform: translateY(-4px); }
+    .card__icon { font-size: 1.8rem; color: #6effe0; opacity: 0.6; margin-bottom: 0.6rem; }
     .card__title { font-weight: 600; color: #fff; font-size: 1.1rem; margin-bottom: 0.3rem; }
-    .card__desc { font-size: 0.95rem; color: rgba(200,210,215,0.55); line-height: 1.5; }
+    .card__desc { font-size: 0.95rem; color: rgba(200,210,215,0.5); line-height: 1.5; }
 
-    /* flasher */
-    .flasher {
+    .flash-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .flash-card {
       background: rgba(18,18,18,0.6);
-      border-radius: 24px;
       border: 1px solid rgba(255,255,255,0.04);
-      padding: 2rem;
-      margin: 1.5rem 0;
-    }
-    .flasher__head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .flasher__label { font-size: 0.8rem; color: rgba(200,210,215,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
-    .flasher__ver { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 600; color: #fff; }
-    .flasher__releases { color: rgba(200,210,215,0.5); font-size: 0.9rem; }
-    .flasher__boards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin: 1rem 0 1.2rem;
-    }
-    .board {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 0.6rem 1.2rem;
-      border-radius: 40px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      color: rgba(200,210,215,0.5);
-      cursor: pointer;
-      transition: 0.2s;
+      border-radius: 20px;
+      padding: 1.8rem 1.5rem;
+      transition: 0.25s ease;
       display: flex;
       flex-direction: column;
-      align-items: start;
-      line-height: 1.2;
     }
-    .board.is-active { border-color: #6effe0; background: rgba(110,255,224,0.06); color: #fff; }
-    .board:hover { border-color: rgba(110,255,224,0.2); }
-    .board__name { font-weight: 600; font-size: 0.9rem; }
-    .board__chip { font-size: 0.7rem; font-weight: 400; opacity: 0.5; }
-    .flasher__file {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      background: rgba(0,0,0,0.3);
-      padding: 0.8rem 1.2rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.04);
-      margin: 0.8rem 0;
-      flex-wrap: wrap;
-    }
-    .flasher__file-info { flex: 1; }
-    .flasher__file-name { font-weight: 500; font-size: 0.9rem; color: #fff; }
-    .flasher__file-meta { font-size: 0.75rem; color: rgba(200,210,215,0.4); display: block; }
-    .flasher__file-tag { background: rgba(110,255,224,0.1); padding: 0.1rem 0.6rem; border-radius: 20px; font-size: 0.7rem; color: #6effe0; font-family: 'JetBrains Mono', monospace; }
-    .flasher__action { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 1.2rem 0; }
-    .flasher__warn { font-size: 0.85rem; color: rgba(200,210,215,0.5); display: flex; align-items: center; gap: 0.4rem; margin: 0.6rem 0; }
-    .flasher__tips { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
-    .flasher__tips li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.85rem; color: rgba(200,210,215,0.5); }
-    .flasher__tips li i { color: #6effe0; opacity: 0.4; margin-top: 0.2rem; }
+    .flash-card:hover { border-color: rgba(110,255,224,0.12); transform: translateY(-4px); }
+    .flash-card .icon { font-size: 2rem; color: #6effe0; opacity: 0.6; margin-bottom: 0.6rem; }
+    .flash-card h3 { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: #fff; margin-bottom: 0.3rem; }
+    .flash-card p { color: rgba(200,210,215,0.5); font-size: 0.9rem; line-height: 1.5; flex: 1; }
+    .flash-card .foot { margin-top: 1rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
 
-    /* footer */
+    .release-banner {
+      background: rgba(18,18,18,0.5);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 1.2rem 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .release-banner .label { font-size: 0.7rem; color: rgba(200,210,215,0.25); text-transform: uppercase; letter-spacing: 0.08em; }
+    .release-banner .version { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 600; color: #fff; }
+    .release-banner .meta { font-size: 0.8rem; color: rgba(200,210,215,0.35); }
+    .release-banner .meta span { color: #6effe0; }
+
     .footer {
-      border-top: 1px solid rgba(255,255,255,0.04);
+      border-top: 1px solid rgba(255,255,255,0.03);
       padding: 2rem 1.5rem 1.5rem;
       text-align: center;
-      color: rgba(200,210,215,0.2);
+      color: rgba(200,210,215,0.15);
       font-size: 0.8rem;
     }
     .footer__links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1rem; }
-    .footer__links a { color: rgba(200,210,215,0.3); }
+    .footer__links a { color: rgba(200,210,215,0.25); }
     .footer__links a:hover { color: #fff; }
 
     @media (max-width: 800px) {
@@ -348,27 +317,21 @@
 </head>
 <body>
 
-  <!-- ── Navbar ── -->
   <header class="nav">
     <div class="nav__inner">
       <a href="#" class="nav__brand">
         <span class="nav__logo">VOID<em>RECON</em></span>
-        <span class="nav__badge">v0.1.0-beta.4</span>
+        <span class="nav__badge">v0.0.1-beta.4</span>
       </a>
       <nav class="nav__links" id="nav-links">
         <a href="#features">Features</a>
-        <a href="#flasher">Flasher</a>
+        <a href="#flash">Flash</a>
         <a href="#hardware">Hardware</a>
-        <a href="#start">Get started</a>
         <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank">Wiki</a>
       </nav>
       <div class="nav__actions">
-        <a class="btn btn--ghost btn--sm" href="https://github.com/wrait8/VoidRecon" target="_blank">
-          <i class="hn hn-github"></i> GitHub
-        </a>
-        <a class="btn btn--ghost btn--sm" href="https://github.com/wrait8/VoidRecon/releases" target="_blank">
-          <i class="hn hn-download"></i> Releases
-        </a>
+        <a class="btn btn--ghost btn--sm" href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="hn hn-github"></i> GitHub</a>
+        <a class="btn btn--ghost btn--sm" href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="hn hn-download"></i> Releases</a>
         <button class="nav__burger" id="nav-burger" aria-label="Menu"><i class="ti ti-menu-2"></i></button>
       </div>
     </div>
@@ -376,51 +339,21 @@
 
   <main>
 
-    <!-- ── Hero ── -->
     <section class="hero">
       <div class="hero__inner">
         <div class="hero__copy">
-          <p class="hero__kicker"><span class="hero__kicker-dot"></span>Open-source · WRAITH</p>
+          <p class="hero__kicker"><span class="hero__kicker-dot"></span>wrait8 · open-source</p>
           <h1 class="hero__title">Sub‑1 GHz<br />Swiss Army knife<span class="accent">.</span></h1>
-          <p class="hero__sub">
-            Sniff, record, replay, and brute‑force signals with an ESP32 and a CC1101 transceiver.
-            Wide frequency coverage, multiple modulations, and a full packet engine.
-          </p>
+          <p class="hero__sub">Sniff, record, replay, and brute‑force signals with an ESP32 and a CC1101 transceiver. Wide frequency coverage, multiple modulations, and a full packet engine.</p>
           <div class="hero__cta">
-            <a href="#flasher" class="btn btn--primary">Flash firmware</a>
-            <a href="https://github.com/wrait8/VoidRecon" class="btn btn--ghost" target="_blank">
-              <i class="hn hn-github"></i> View source
-            </a>
+            <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank" class="btn btn--primary">Wiki</a>
+            <a href="https://github.com/wrait8/VoidRecon" class="btn btn--ghost" target="_blank"><i class="hn hn-github"></i> View source</a>
           </div>
           <div class="hero__stats">
-            <div class="stat">
-              <i class="hn hn-star stat__icon"></i>
-              <div class="stat__body">
-                <span class="stat__v" id="repo-stars">3</span>
-                <span class="stat__l">stars</span>
-              </div>
-            </div>
-            <div class="stat">
-              <i class="hn hn-fork stat__icon"></i>
-              <div class="stat__body">
-                <span class="stat__v" id="repo-forks">0</span>
-                <span class="stat__l">forks</span>
-              </div>
-            </div>
-            <div class="stat">
-              <i class="hn hn-tag stat__icon"></i>
-              <div class="stat__body">
-                <span class="stat__v">v0.1.0-beta.4</span>
-                <span class="stat__l">latest</span>
-              </div>
-            </div>
-            <div class="stat">
-              <i class="hn hn-check-circle stat__icon"></i>
-              <div class="stat__body">
-                <span class="stat__v">MIT</span>
-                <span class="stat__l">license</span>
-              </div>
-            </div>
+            <div class="stat"><i class="hn hn-star stat__icon"></i><div class="stat__body"><span class="stat__v">3</span><span class="stat__l">stars</span></div></div>
+            <div class="stat"><i class="hn hn-fork stat__icon"></i><div class="stat__body"><span class="stat__v">0</span><span class="stat__l">forks</span></div></div>
+            <div class="stat"><i class="hn hn-tag stat__icon"></i><div class="stat__body"><span class="stat__v">v0.0.1-beta.4</span><span class="stat__l">latest</span></div></div>
+            <div class="stat"><i class="hn hn-check-circle stat__icon"></i><div class="stat__body"><span class="stat__v">MIT</span><span class="stat__l">license</span></div></div>
           </div>
         </div>
         <div class="hero__visual">
@@ -430,7 +363,6 @@
       </div>
     </section>
 
-    <!-- ── Features ── -->
     <section class="section" id="features">
       <div class="section__inner">
         <span class="eyebrow"><i class="hn hn-wifi"></i>Features</span>
@@ -447,88 +379,77 @@
       </div>
     </section>
 
-    <!-- ── Flasher ── -->
-    <section class="section section--alt" id="flasher">
+    <section class="section section--alt" id="flash">
       <div class="section__inner">
-        <span class="eyebrow"><i class="hn hn-bolt"></i>Flasher</span>
-        <h2 class="section__title">Flash from<br />your browser<span class="accent">.</span></h2>
-        <p class="section__sub">No toolchain needed — pick your board, plug in USB, and flash over Web Serial.</p>
-        <div class="flasher">
-          <div class="flasher__head">
-            <div>
-              <p class="flasher__label">Latest firmware</p>
-              <p class="flasher__ver">v0.1.0-beta.4</p>
+        <span class="eyebrow"><i class="hn hn-bolt"></i>Flash</span>
+        <h2 class="section__title">Pick your method<span class="accent">.</span></h2>
+        <p class="section__sub">Choose the flashing approach that fits your workflow.</p>
+
+        <div class="release-banner">
+          <div>
+            <div class="label">Latest release</div>
+            <div class="version">v0.0.1-beta.4</div>
+            <div class="meta">Released 2 weeks ago · <span>1bdfabf</span></div>
+          </div>
+          <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+            <a href="https://github.com/wrait8/VoidRecon/releases/tag/v0.0.1-beta.4" target="_blank" class="btn btn--primary btn--sm">Download assets</a>
+            <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank" class="btn btn--ghost btn--sm">All releases</a>
+          </div>
+        </div>
+
+        <div class="flash-options">
+          <div class="flash-card">
+            <div class="icon"><i class="ti ti-globe"></i></div>
+            <h3>Web Flasher</h3>
+            <p>Real ESP32 protocol via Web Serial — no toolchain needed. Connect, select firmware, flash.</p>
+            <div class="foot">
+              <a href="https://wrait8.github.io/WFlasher/" target="_blank" class="btn btn--primary btn--sm">Open flasher</a>
+              <a href="https://wrait8.github.io/WFlasher/" target="_blank" class="btn btn--ghost btn--sm">Full version</a>
             </div>
-            <a class="flasher__releases" href="https://github.com/wrait8/VoidRecon/releases" target="_blank">All releases <i class="ti ti-arrow-up-right"></i></a>
           </div>
-          <div class="flasher__boards" id="board-picker">
-            <button class="board is-active" data-board="esp32"><span class="board__name">ESP32 + CC1101</span><span class="board__chip">ESP32 · 1.8 MB</span></button>
-            <button class="board" data-board="atmega"><span class="board__name">Atmega32u4 (future)</span><span class="board__chip">Atmega32u4 · 32 KB</span></button>
-          </div>
-          <div class="flasher__file">
-            <i class="ti ti-file-code"></i>
-            <div class="flasher__file-info">
-              <span class="flasher__file-name">VoidRecon-v0.1.0-beta.4-merged.bin</span>
-              <span class="flasher__file-meta">ESP32 · 1.8 MB · complete image</span>
+
+          <div class="flash-card">
+            <div class="icon"><i class="ti ti-terminal"></i></div>
+            <h3>CLI Tool</h3>
+            <p>Use the built‑in <code>Flasher.py</code> from the <code>/Flasher</code> folder. Interactive or direct mode.</p>
+            <div class="foot">
+              <a href="https://github.com/wrait8/VoidRecon/blob/main/Flasher/Flasher.py" target="_blank" class="btn btn--ghost btn--sm"><i class="ti ti-file-code"></i> View script</a>
             </div>
-            <span class="flasher__file-tag">v0.1.0-beta.4</span>
           </div>
-          <div class="flasher__action">
-            <a class="btn btn--primary" href="https://github.com/wrait8/VoidRecon/releases/latest"><i class="hn hn-bolt"></i> Install firmware</a>
-            <a class="btn btn--ghost" href="https://github.com/wrait8/VoidRecon/releases/latest" target="_blank"><i class="hn hn-download"></i> Download .bin</a>
+
+          <div class="flash-card">
+            <div class="icon"><i class="ti ti-code"></i></div>
+            <h3>Source &amp; IDE</h3>
+            <p>Download the source, open <code>VoidRecon.ino</code> in Arduino IDE, and upload to your board.</p>
+            <div class="foot">
+              <a href="https://github.com/wrait8/VoidRecon/archive/refs/heads/main.zip" target="_blank" class="btn btn--ghost btn--sm"><i class="ti ti-download"></i> Source .zip</a>
+              <a href="https://github.com/wrait8/VoidRecon" target="_blank" class="btn btn--ghost btn--sm"><i class="ti ti-brand-github"></i> Clone</a>
+            </div>
           </div>
-          <ul class="flasher__tips">
-            <li><i class="ti ti-plug"></i><span>Device not detected? Hold <strong>BOOT</strong>, tap <strong>RESET</strong>, then release BOOT.</span></li>
-            <li><i class="ti ti-usb"></i><span>Use a data‑capable USB cable, not charge‑only.</span></li>
-            <li><i class="ti ti-info-circle"></i><span>First install? Choose <strong>Erase device</strong> when prompted.</span></li>
-          </ul>
         </div>
       </div>
     </section>
 
-    <!-- ── Hardware ── -->
     <section class="section" id="hardware">
       <div class="section__inner">
         <span class="eyebrow"><i class="hn hn-cog"></i>Hardware</span>
         <h2 class="section__title">PCB &amp; breadboard<span class="accent">.</span></h2>
         <p class="section__sub">Official PCB, schematics, Gerber, and BOM — plus breadboard wiring for ESP32 + CC1101.</p>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:1.5rem; margin-top:1.5rem;">
-          <div style="background:rgba(18,18,18,0.6); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.04);">
+          <div style="background:rgba(18,18,18,0.5); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.04);">
             <h3 style="font-size:1.1rem; color:#fff; margin-bottom:0.4rem;"><i class="ti ti-circuit-board"></i> PCB v1</h3>
             <p style="color:rgba(200,210,215,0.5); font-size:0.9rem;">Atmega32u4 + CC1101, USB‑C, SMA antenna. All files in <code>PCB/</code>.</p>
           </div>
-          <div style="background:rgba(18,18,18,0.6); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.04);">
+          <div style="background:rgba(18,18,18,0.5); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.04);">
             <h3 style="font-size:1.1rem; color:#fff; margin-bottom:0.4rem;"><i class="ti ti-layout-grid"></i> Breadboard</h3>
             <p style="color:rgba(200,210,215,0.5); font-size:0.9rem;">ESP32 + CC1101 module — wiring diagram in the <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank">Wiki</a>.</p>
           </div>
-          <div style="background:rgba(18,18,18,0.6); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.04);">
-            <h3 style="font-size:1.1rem; color:#fff; margin-bottom:0.4rem;"><i class="ti ti-antenna"></i> Antenna</h3>
-            <p style="color:rgba(200,210,215,0.5); font-size:0.9rem;">Quarter‑wave whip (~17.3 cm for 433 MHz) or SMA.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Get started ── -->
-    <section class="section section--alt" id="start">
-      <div class="section__inner">
-        <span class="eyebrow"><i class="hn hn-book"></i>Get started</span>
-        <h2 class="section__title">Up and running<br />in minutes<span class="accent">.</span></h2>
-        <p class="section__sub">Full details in the <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank">Wiki</a>.</p>
-        <div style="background:rgba(18,18,18,0.6); border-radius:24px; padding:2rem; border:1px solid rgba(255,255,255,0.04);">
-          <ol style="list-style:none; display:flex; flex-direction:column; gap:1.2rem; max-width:700px;">
-            <li style="display:flex; gap:1rem; align-items:flex-start;"><span style="font-weight:700; color:#6effe0; font-family:'JetBrains Mono';">01</span><div><strong style="color:#fff;">Download firmware</strong><p style="color:rgba(200,210,215,0.5); font-size:0.95rem;">Grab the latest <code>.bin</code> from <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank">Releases</a>.</p></div></li>
-            <li style="display:flex; gap:1rem; align-items:flex-start;"><span style="font-weight:700; color:#6effe0; font-family:'JetBrains Mono';">02</span><div><strong style="color:#fff;">Flash with esptool</strong><p style="color:rgba(200,210,215,0.5); font-size:0.95rem;"><code>esptool.py --chip esp32 --baud 921600 write_flash 0x0 firmware.bin</code></p></div></li>
-            <li style="display:flex; gap:1rem; align-items:flex-start;"><span style="font-weight:700; color:#6effe0; font-family:'JetBrains Mono';">03</span><div><strong style="color:#fff;">Enter flash mode</strong><p style="color:rgba(200,210,215,0.5); font-size:0.95rem;">Hold BOOT, press RESET, release BOOT — then plug in USB‑C.</p></div></li>
-            <li style="display:flex; gap:1rem; align-items:flex-start;"><span style="font-weight:700; color:#6effe0; font-family:'JetBrains Mono';">04</span><div><strong style="color:#fff;">Reboot &amp; explore</strong><p style="color:rgba(200,210,215,0.5); font-size:0.95rem;">Press RESET, then open serial monitor at 115200 baud.</p></div></li>
-          </ol>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ── Footer ── -->
   <footer class="footer">
     <div class="footer__links">
       <a href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="hn hn-github"></i> GitHub</a>
@@ -536,13 +457,13 @@
       <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="hn hn-download"></i> Releases</a>
       <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="hn hn-message"></i> Discussions</a>
     </div>
-    <p>© 2026 WRAITH · Void Recon — MIT licensed</p>
+    <p>© 2026 wrait8 · Void Recon — MIT licensed</p>
   </footer>
 
-  <!-- ── Three.js Viewer ── -->
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     const container = document.getElementById('hero-viewer');
     const width = container.clientWidth;
@@ -552,101 +473,178 @@
     scene.background = new THREE.Color(0x0b0c0e);
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(4, 2, 6);
+    camera.position.set(4, 3, 6);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.8;
-    controls.minDistance = 3;
-    controls.maxDistance = 12;
+    controls.autoRotateSpeed = 1.5;
+    controls.minDistance = 2;
+    controls.maxDistance = 15;
+    controls.target.set(0, 0.5, 0);
 
-    // ── lights ──
-    const ambient = new THREE.AmbientLight(0x404060);
+    // ── Lights ──
+    const ambient = new THREE.AmbientLight(0x404060, 0.5);
     scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2);
     dirLight.position.set(5, 10, 7);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
     scene.add(dirLight);
 
-    const fillLight = new THREE.DirectionalLight(0x6effe0, 0.6);
+    const fillLight = new THREE.DirectionalLight(0x6effe0, 0.5);
     fillLight.position.set(-5, 2, -3);
     scene.add(fillLight);
 
-    const backLight = new THREE.DirectionalLight(0x4466ff, 0.4);
+    const backLight = new THREE.DirectionalLight(0x4466ff, 0.3);
     backLight.position.set(0, -2, -8);
     scene.add(backLight);
 
-    // ── PCB model (abstract) ──
-    const group = new THREE.Group();
+    const hemiLight = new THREE.HemisphereLight(0x6effe0, 0x0b0c0e, 0.3);
+    scene.add(hemiLight);
 
-    // main board (PCB)
-    const boardGeo = new THREE.BoxGeometry(3.2, 0.2, 2.4);
-    const boardMat = new THREE.MeshStandardMaterial({ color: 0x1a2a2a, roughness: 0.6, metalness: 0.3 });
-    const board = new THREE.Mesh(boardGeo, boardMat);
-    board.position.y = 0.1;
-    group.add(board);
+    // ── Load PCB model from Models/ directory ──
+    const loader = new GLTFLoader();
+    const modelPath = 'Models/voidrecon-pcb.glb';
 
-    // traces (lines)
-    const traceMat = new THREE.MeshStandardMaterial({ color: 0x6effe0, emissive: 0x6effe0, emissiveIntensity: 0.1 });
-    for (let i = 0; i < 12; i++) {
-      const trace = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.02, 0.5 + Math.random() * 0.6), traceMat);
-      trace.position.set(-1.2 + i * 0.45, 0.22, -0.8 + Math.random() * 1.6);
-      group.add(trace);
+    console.log('🔄 Loading PCB model from:', modelPath);
+
+    // Loading indicator
+    const loadingDiv = document.createElement('div');
+    loadingDiv.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(200,210,215,0.3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.6;
+    `;
+    loadingDiv.innerHTML = 'Loading PCB…<br><span style="font-size:0.7rem;color:rgba(200,210,215,0.15);">models/voidrecon-pcb.glb</span>';
+    container.appendChild(loadingDiv);
+
+    loader.load(
+      modelPath,
+      (gltf) => {
+        // Remove loading indicator
+        loadingDiv.remove();
+        
+        const model = gltf.scene;
+        
+        // Auto-scale and center
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const targetSize = 3.5;
+        const scale = targetSize / maxDim;
+        
+        model.scale.set(scale, scale, scale);
+        model.position.sub(center.multiplyScalar(scale));
+        model.position.y += 0.2;
+        
+        // Enable shadows
+        model.traverse((node) => {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+          }
+        });
+        
+        scene.add(model);
+        console.log('✅ PCB model loaded successfully!');
+        console.log('📐 Model dimensions:', size);
+        console.log('📏 Scale applied:', scale.toFixed(3));
+        console.log('🔢 Mesh count:', model.children.length);
+      },
+      (progress) => {
+        const percent = (progress.loaded / progress.total * 100).toFixed(0);
+        loadingDiv.innerHTML = `Loading PCB… ${percent}%<br><span style="font-size:0.7rem;color:rgba(200,210,215,0.15);">models/voidrecon-pcb.glb</span>`;
+      },
+      (error) => {
+        // Remove loading indicator
+        loadingDiv.remove();
+        console.error('❌ Failed to load PCB model:', error);
+        console.log('⚠️ Using fallback abstract model...');
+        createFallbackModel();
+      }
+    );
+
+    // ── Fallback abstract model ──
+    function createFallbackModel() {
+      const group = new THREE.Group();
+      
+      const boardGeo = new THREE.BoxGeometry(3.2, 0.2, 2.4);
+      const boardMat = new THREE.MeshStandardMaterial({ color: 0x1a2a2a, roughness: 0.6, metalness: 0.3 });
+      const board = new THREE.Mesh(boardGeo, boardMat);
+      board.position.y = 0.1;
+      board.castShadow = true;
+      board.receiveShadow = true;
+      group.add(board);
+
+      const traceMat = new THREE.MeshStandardMaterial({ color: 0x6effe0, emissive: 0x6effe0, emissiveIntensity: 0.1 });
+      for (let i = 0; i < 12; i++) {
+        const trace = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.02, 0.5 + Math.random() * 0.6), traceMat);
+        trace.position.set(-1.2 + i * 0.45, 0.22, -0.8 + Math.random() * 1.6);
+        group.add(trace);
+      }
+
+      const chipGeo = new THREE.BoxGeometry(0.7, 0.08, 0.7);
+      const chipMat = new THREE.MeshStandardMaterial({ color: 0x222233, roughness: 0.4, metalness: 0.6 });
+      const chip = new THREE.Mesh(chipGeo, chipMat);
+      chip.position.set(0.6, 0.24, 0.2);
+      chip.castShadow = true;
+      group.add(chip);
+
+      const ccGeo = new THREE.BoxGeometry(0.5, 0.06, 0.5);
+      const ccMat = new THREE.MeshStandardMaterial({ color: 0x334455, roughness: 0.5, metalness: 0.3 });
+      const cc = new THREE.Mesh(ccGeo, ccMat);
+      cc.position.set(-0.7, 0.22, -0.3);
+      group.add(cc);
+
+      const smaGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.4, 8);
+      const smaMat = new THREE.MeshStandardMaterial({ color: 0x888899, metalness: 0.8, roughness: 0.3 });
+      const sma = new THREE.Mesh(smaGeo, smaMat);
+      sma.rotation.z = Math.PI / 2;
+      sma.position.set(1.8, 0.2, 0);
+      group.add(sma);
+
+      const antGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.2, 6);
+      const antMat = new THREE.MeshStandardMaterial({ color: 0xccccdd, metalness: 0.7, roughness: 0.2 });
+      const ant = new THREE.Mesh(antGeo, antMat);
+      ant.position.set(1.8, 0.8, 0);
+      ant.rotation.z = 0.1;
+      group.add(ant);
+
+      const ledMat = new THREE.MeshStandardMaterial({ color: 0x6effe0, emissive: 0x6effe0, emissiveIntensity: 0.2 });
+      for (let i = 0; i < 3; i++) {
+        const led = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), ledMat);
+        led.position.set(-1.2 + i * 0.2, 0.26, 1.0);
+        group.add(led);
+      }
+
+      scene.add(group);
     }
 
-    // chip (ESP32)
-    const chipGeo = new THREE.BoxGeometry(0.7, 0.08, 0.7);
-    const chipMat = new THREE.MeshStandardMaterial({ color: 0x222233, roughness: 0.4, metalness: 0.6 });
-    const chip = new THREE.Mesh(chipGeo, chipMat);
-    chip.position.set(0.6, 0.24, 0.2);
-    group.add(chip);
-
-    // CC1101
-    const ccGeo = new THREE.BoxGeometry(0.5, 0.06, 0.5);
-    const ccMat = new THREE.MeshStandardMaterial({ color: 0x334455, roughness: 0.5, metalness: 0.3 });
-    const cc = new THREE.Mesh(ccGeo, ccMat);
-    cc.position.set(-0.7, 0.22, -0.3);
-    group.add(cc);
-
-    // SMA connector
-    const smaGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.4, 8);
-    const smaMat = new THREE.MeshStandardMaterial({ color: 0x888899, metalness: 0.8, roughness: 0.3 });
-    const sma = new THREE.Mesh(smaGeo, smaMat);
-    sma.rotation.z = Math.PI / 2;
-    sma.position.set(1.8, 0.2, 0);
-    group.add(sma);
-
-    // antenna (whip)
-    const antGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.2, 6);
-    const antMat = new THREE.MeshStandardMaterial({ color: 0xccccdd, metalness: 0.7, roughness: 0.2 });
-    const ant = new THREE.Mesh(antGeo, antMat);
-    ant.position.set(1.8, 0.8, 0);
-    ant.rotation.z = 0.1;
-    group.add(ant);
-
-    // tiny LEDs
-    const ledMat = new THREE.MeshStandardMaterial({ color: 0x6effe0, emissive: 0x6effe0, emissiveIntensity: 0.2 });
-    for (let i = 0; i < 3; i++) {
-      const led = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), ledMat);
-      led.position.set(-1.2 + i * 0.2, 0.26, 1.0);
-      group.add(led);
-    }
-
-    scene.add(group);
-
-    // grid helper (subtle)
+    // ── Ground grid ──
     const gridHelper = new THREE.GridHelper(8, 20, 0x6effe0, 0x334455);
     gridHelper.position.y = -0.1;
     scene.add(gridHelper);
 
-    // ── resize ──
+    // ── Resize ──
     function resize() {
       const w = container.clientWidth;
       const h = container.clientHeight || 300;
@@ -656,7 +654,7 @@
     }
     window.addEventListener('resize', resize);
 
-    // ── animate ──
+    // ── Animation loop ──
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
@@ -664,9 +662,13 @@
     }
     animate();
 
-    // auto-rotate toggle on drag
-    renderer.domElement.addEventListener('pointerdown', () => { controls.autoRotate = false; });
-    renderer.domElement.addEventListener('pointerup', () => { setTimeout(() => { controls.autoRotate = true; }, 3000); });
+    // ── Auto-rotate toggle ──
+    renderer.domElement.addEventListener('pointerdown', () => { 
+      controls.autoRotate = false; 
+    });
+    renderer.domElement.addEventListener('pointerup', () => { 
+      setTimeout(() => { controls.autoRotate = true; }, 3000); 
+    });
   </script>
 </body>
 </html>
