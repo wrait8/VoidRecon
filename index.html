@@ -472,9 +472,9 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b0c0e);
 
-    // Camera looking down from above - 5% zoomed out (increased distance)
+    // Camera looking down from above - another 5% zoomed out
     const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 1000);
-    camera.position.set(0, 8.4, 0.1); // Increased from 8 to 8.4 (5% further)
+    camera.position.set(0, 8.8, 0.1); // Increased from 8.4 to 8.8 (another 5%)
     camera.lookAt(0, 2, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
