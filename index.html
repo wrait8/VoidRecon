@@ -472,9 +472,9 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b0c0e);
 
-    // Camera looking down from above (50° from top)
+    // Camera looking down from above - 5% zoomed out (increased distance)
     const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 1000);
-    camera.position.set(0, 8, 0.1);
+    camera.position.set(0, 8.4, 0.1); // Increased from 8 to 8.4 (5% further)
     camera.lookAt(0, 2, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -533,8 +533,6 @@
 
     const hemiLight = new THREE.HemisphereLight(0x6effe0, 0x0b0c0e, 0.3);
     scene.add(hemiLight);
-
-    // ── NO grid lines ──
 
     // ── Load REAL PCB model ──
     const loader = new GLTFLoader();
