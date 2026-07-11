@@ -163,7 +163,18 @@
     }
     .btn--primary:hover { background: #8affea; transform: translateY(-2px); }
     .btn--sm { padding: 0.3rem 1rem; font-size: 0.8rem; }
-    .nav__burger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; padding: 0.2rem 0.4rem; }
+    .nav__burger { 
+      display: none; 
+      background: none; 
+      border: none; 
+      color: #fff; 
+      font-size: 1.6rem; 
+      cursor: pointer; 
+      padding: 0.2rem 0.4rem;
+      line-height: 1;
+      align-self: center;
+    }
+    .nav__burger i { pointer-events: none; }
 
     .hero {
       position: relative;
@@ -357,7 +368,6 @@
       color: #6effe0; 
       opacity: 0.6; 
       margin-bottom: 0.6rem;
-      font-family: 'tabler-icons', sans-serif;
       line-height: 1;
     }
     .flash-card h3 { 
@@ -439,6 +449,7 @@
       color: #fff; 
       margin-bottom: 0.4rem; 
     }
+    .hardware-card h3 i { }
     .hardware-card p { 
       font-family: 'Space Grotesk', sans-serif;
       color: rgba(200,210,215,0.5); 
@@ -507,9 +518,16 @@
         padding: 1rem 0;
         border-top: 1px solid rgba(255,255,255,0.04);
         margin-top: 0.6rem;
+        order: 3;
       }
-      .nav__links.active { display: flex; }
-      .nav__inner { flex-wrap: wrap; }
+      .nav__links.open { display: flex; }
+      .nav__inner { 
+        flex-wrap: wrap; 
+        justify-content: space-between;
+      }
+      .nav__brand { order: 1; }
+      .nav__actions { order: 2; }
+      .nav__links { order: 3; }
       
       /* Bigger buttons on mobile */
       .hero__cta .btn {
@@ -727,10 +745,10 @@
   <footer class="footer">
     <div class="footer__inner">
       <div class="footer__links">
-        <a href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="hn hn-github"></i> GitHub</a>
-        <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank"><i class="hn hn-book"></i> Wiki</a>
-        <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="hn hn-download"></i> Releases</a>
-        <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="hn hn-message"></i> Discussions</a>
+        <a href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="ti ti-brand-github"></i> GitHub</a>
+        <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank"><i class="ti ti-book"></i> Wiki</a>
+        <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="ti ti-download"></i> Releases</a>
+        <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="ti ti-message"></i> Discussions</a>
       </div>
       <p>© 2026 wrait8 · Void Recon — MIT licensed</p>
     </div>
@@ -950,20 +968,28 @@
       scene.add(group);
     }
 
-    document.getElementById('nav-burger').addEventListener('click', function(e) {
+    // ── Burger menu functionality ──
+    const burger = document.getElementById('nav-burger');
+    const navLinks = document.getElementById('nav-links');
+
+    burger.addEventListener('click', function(e) {
       e.stopPropagation();
-      const links = document.getElementById('nav-links');
-      links.classList.toggle('active');
+      navLinks.classList.toggle('open');
     });
 
     // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       const nav = document.querySelector('.nav');
-      const burger = document.getElementById('nav-burger');
-      const links = document.getElementById('nav-links');
-      if (!nav.contains(e.target) && links.classList.contains('active')) {
-        links.classList.remove('active');
+      if (nav && !nav.contains(e.target)) {
+        navLinks.classList.remove('open');
       }
+    });
+
+    // Close menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+      });
     });
 
     function resize() {
