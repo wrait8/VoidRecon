@@ -505,6 +505,12 @@
     @media (max-width: 800px) {
       .hero__inner { grid-template-columns: 1fr; gap: 2rem; }
       
+      /* LTR text alignment on mobile */
+      .hero__title { text-align: left; }
+      .hero__sub { max-width: 100%; text-align: left; }
+      .hero__cta { justify-content: flex-start; }
+      .hero__stats { gap: 0.8rem; justify-content: flex-start; padding-top: 0.8rem; margin-top: 0.8rem; }
+      
       /* Mobile menu - only show burger, hide GitHub and Releases from nav actions */
       .nav__actions .btn--ghost { display: none; }
       .nav__burger { display: block; }
@@ -513,7 +519,7 @@
         display: none; 
         width: 100%;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         gap: 0.8rem;
         padding: 1rem 0;
         border-top: 1px solid rgba(255,255,255,0.04);
@@ -538,12 +544,6 @@
       }
       
       /* Stats smaller and better spaced on mobile */
-      .hero__stats { 
-        gap: 0.8rem; 
-        justify-content: center;
-        padding-top: 0.8rem;
-        margin-top: 0.8rem;
-      }
       .stat { 
         flex-direction: row; 
         align-items: center; 
@@ -557,9 +557,6 @@
       .hero__visual { min-height: 200px; }
       .release-banner { flex-direction: column; text-align: center; gap: 0.8rem; }
       .flash-options { grid-template-columns: 1fr; }
-      .hero__cta { justify-content: center; }
-      .hero__sub { max-width: 100%; text-align: center; }
-      .hero__title { text-align: center; }
       .hardware-grid { grid-template-columns: 1fr; }
       
       /* Footer wider on mobile */
@@ -593,8 +590,8 @@
       .section { padding: 2rem 0.8rem; }
       .hero { padding: 1rem 0.8rem; min-height: 80vh; }
       .hero__visual { min-height: 180px; }
-      .hero__title { font-size: clamp(2rem, 10vw, 2.8rem); }
-      .hero__sub { font-size: 0.95rem; }
+      .hero__title { font-size: clamp(2rem, 10vw, 2.8rem); text-align: left; }
+      .hero__sub { font-size: 0.95rem; text-align: left; }
       .card { padding: 1.2rem 1rem; }
       .flash-card { padding: 1.2rem 1rem; }
       .hardware-card { padding: 1.2rem 1rem; }
