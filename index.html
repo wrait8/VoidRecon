@@ -161,7 +161,7 @@
       color: #0b0c0e;
       border-color: #6effe0;
     }
-    .btn--primary:hover { background: #8affea; transform: translateY(-2px); box-shadow: 0 0 40px rgba(110,255,224,0.15); }
+    .btn--primary:hover { background: #8affea; transform: translateY(-2px); }
     .btn--sm { padding: 0.3rem 1rem; font-size: 0.8rem; }
     .nav__burger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
 
@@ -217,7 +217,7 @@
     .hero__visual {
       background: rgba(18,18,18,0.5);
       border: 1px solid rgba(255,255,255,0.04);
-      padding: 1rem;
+      padding: 0;
       aspect-ratio: 4/3;
       display: flex;
       align-items: center;
@@ -225,9 +225,9 @@
       min-height: 280px;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: border-color 0.3s ease;
     }
-    .hero__visual:hover { border-color: rgba(110,255,224,0.12); box-shadow: 0 0 60px rgba(110,255,224,0.02); }
+    .hero__visual:hover { border-color: rgba(110,255,224,0.12); }
     #hero-viewer {
       width: 100%;
       height: 100%;
@@ -308,7 +308,6 @@
       border-color: rgba(110,255,224,0.2); 
       transform: translateY(-6px);
       background: rgba(18,18,18,0.8);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
     }
     .card__icon { font-size: 1.8rem; color: #6effe0; opacity: 0.6; margin-bottom: 0.6rem; }
     .card__title { 
@@ -352,7 +351,6 @@
       border-color: rgba(110,255,224,0.2); 
       transform: translateY(-6px);
       background: rgba(18,18,18,0.8);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
     }
     .flash-card .icon { font-size: 2rem; color: #6effe0; opacity: 0.6; margin-bottom: 0.6rem; }
     .flash-card h3 { 
@@ -427,7 +425,6 @@
       border-color: rgba(110,255,224,0.2); 
       transform: translateY(-4px);
       background: rgba(18,18,18,0.7);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
     .hardware-card h3 { 
       font-family: 'Space Mono', monospace;
@@ -455,7 +452,6 @@
       border-top: 1px solid rgba(255,255,255,0.03);
       padding: 2rem 1.5rem 1.5rem;
       text-align: center;
-      color: rgba(200,210,215,0.15);
       font-size: 0.8rem;
       font-family: 'Space Grotesk', sans-serif;
     }
@@ -477,7 +473,10 @@
     }
     .footer__links a:hover { color: #fff; }
     .footer__links a i { font-size: 1rem; }
-    .footer p { font-family: 'Space Grotesk', sans-serif; }
+    .footer p { 
+      font-family: 'Space Grotesk', sans-serif;
+      color: rgba(200,210,215,0.15);
+    }
 
     /* ── Mobile fixes ── */
     @media (max-width: 800px) {
@@ -554,7 +553,7 @@
     <section class="hero">
       <div class="hero__inner">
         <div class="hero__copy">
-          <h1 class="hero__title">Sub‑1 GHz<br />Swiss Army knife<span class="accent">.</span></h1>
+          <h1 class="hero__title">Sub‑1 GHz<br />Swiss Army knife<span class="accent"></span></h1>
           <p class="hero__sub">Sniff, record, replay, and brute‑force signals with an ESP32 and a CC1101 transceiver. Wide frequency coverage, multiple modulations, and a full packet engine.</p>
           <div class="hero__cta">
             <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank" class="btn btn--primary">Wiki</a>
@@ -570,12 +569,6 @@
         <div class="hero__visual">
           <div id="hero-viewer"></div>
           <span class="viewer__hint"><i class="ti ti-hand-move"></i> drag to rotate</span>
-          <div style="position:absolute; top:10px; left:10px; color:rgba(110,255,224,0.3); font-family:'Space Mono',monospace; font-size:0.65rem; pointer-events:none; background:rgba(0,0,0,0.5); padding:3px 7px; border:1px solid rgba(110,255,224,0.06);">
-            Positions: 1 2 3 4 5 6
-          </div>
-          <div style="position:absolute; bottom:55px; left:10px; color:rgba(110,255,224,0.15); font-family:'Space Mono',monospace; font-size:0.55rem; pointer-events:none; background:rgba(0,0,0,0.5); padding:2px 6px; border:1px solid rgba(110,255,224,0.04);">
-            Tell me which number looks best
-          </div>
         </div>
       </div>
     </section>
@@ -690,18 +683,8 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b0c0e);
 
-    const positions = {
-      1: { x: 0, y: 8.8, z: 0.1 },
-      2: { x: 5, y: 4, z: 9 },
-      3: { x: -5, y: 4, z: 9 },
-      4: { x: 5, y: 2, z: -5 },
-      5: { x: 0, y: 2, z: 10 },
-      6: { x: 8, y: 3, z: 3 }
-    };
-
-    let currentPos = 1;
     const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 1000);
-    camera.position.set(positions[1].x, positions[1].y, positions[1].z);
+    camera.position.set(0, 8.8, 0.1);
     camera.lookAt(0, 2, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -928,15 +911,6 @@
     renderer.domElement.addEventListener('pointerup', () => { 
       setTimeout(() => { controls.autoRotate = true; }, 3000); 
     });
-
-    console.log('📷 Camera positions:');
-    console.log('  1: Top-down     (0, 8.8, 0.1)');
-    console.log('  2: Front-right  (5, 4, 9)');
-    console.log('  3: Front-left   (-5, 4, 9)');
-    console.log('  4: Back-right   (5, 2, -5)');
-    console.log('  5: Front        (0, 2, 10)');
-    console.log('  6: Side         (8, 3, 3)');
-    console.log('Current position: 1');
   </script>
 </body>
 </html>
