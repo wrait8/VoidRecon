@@ -481,6 +481,11 @@
     /* ── Mobile fixes ── */
     @media (max-width: 800px) {
       .hero__inner { grid-template-columns: 1fr; gap: 2rem; }
+      
+      /* Mobile menu - only show burger, hide GitHub and Releases from nav actions */
+      .nav__actions .btn--ghost { display: none; }
+      .nav__burger { display: block; }
+      
       .nav__links { 
         display: none; 
         width: 100%;
@@ -492,12 +497,33 @@
         margin-top: 0.6rem;
       }
       .nav__links.active { display: flex; }
-      .nav__burger { display: block; }
       .nav__inner { flex-wrap: wrap; }
-      .nav__actions { flex-wrap: wrap; justify-content: center; }
-      .hero__stats { gap: 1rem; justify-content: center; }
-      .stat { flex-direction: column; align-items: center; gap: 0.2rem; }
-      .stat__l { margin-left: 0; }
+      
+      /* Bigger buttons on mobile */
+      .hero__cta .btn {
+        font-size: 1rem;
+        padding: 0.7rem 1.8rem;
+        min-width: 140px;
+        justify-content: center;
+      }
+      
+      /* Stats smaller and better spaced on mobile */
+      .hero__stats { 
+        gap: 0.8rem; 
+        justify-content: center;
+        padding-top: 0.8rem;
+        margin-top: 0.8rem;
+      }
+      .stat { 
+        flex-direction: row; 
+        align-items: center; 
+        gap: 0.3rem;
+        font-size: 0.85rem;
+      }
+      .stat__icon { font-size: 0.9rem; }
+      .stat__v { font-size: 0.9rem; }
+      .stat__l { font-size: 0.65rem; margin-left: 0.1rem; }
+      
       .hero__visual { min-height: 200px; }
       .release-banner { flex-direction: column; text-align: center; gap: 0.8rem; }
       .flash-options { grid-template-columns: 1fr; }
@@ -511,7 +537,21 @@
     @media (max-width: 480px) {
       .nav { padding: 0.4rem 0.8rem; }
       .nav__brand { font-size: 1rem; }
-      .btn { font-size: 0.75rem; padding: 0.3rem 0.8rem; }
+      
+      /* Even bigger buttons on small phones */
+      .hero__cta .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.4rem;
+        min-width: 120px;
+      }
+      
+      /* Stats even smaller */
+      .hero__stats { gap: 0.5rem; }
+      .stat { gap: 0.2rem; font-size: 0.75rem; }
+      .stat__icon { font-size: 0.8rem; }
+      .stat__v { font-size: 0.8rem; }
+      .stat__l { font-size: 0.6rem; }
+      
       .section { padding: 2rem 0.8rem; }
       .hero { padding: 1rem 0.8rem; min-height: 80vh; }
       .hero__visual { min-height: 180px; }
