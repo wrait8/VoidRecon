@@ -8,6 +8,7 @@
 ---
 
 ## Features
+<img width="1920" height="1080" alt="render-1783769825014" src="https://github.com/user-attachments/assets/6120951a-2162-4bd6-90d4-06b33e4da682" />
 
 - Packet Sniffer: Receive and log RF packets.
 - Frequency Analyzer: Scan and detect active channels in Sub-GHz spectrum.
@@ -21,7 +22,9 @@
 - Brute-Force Mode: Timing-based signal brute forcing (`brute`).
 - RF Chat Mode: Peer-to-peer RF communication (`chat`).
 
----
+
+## ScreenShot
+<img width="1169" height="493" alt="Screenshot 2026-06-25 135420" src="https://github.com/user-attachments/assets/9ed24694-69d1-4a7f-b5b5-283061757d74" />
 
 ## Planned Improvements
 ### Edge-Based Recording (In Development)
