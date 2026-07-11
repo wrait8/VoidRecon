@@ -163,7 +163,7 @@
     }
     .btn--primary:hover { background: #8affea; transform: translateY(-2px); }
     .btn--sm { padding: 0.3rem 1rem; font-size: 0.8rem; }
-    .nav__burger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+    .nav__burger { display: none; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; font-family: 'Space Grotesk', sans-serif; padding: 0.2rem 0.4rem; }
 
     .hero {
       position: relative;
@@ -352,7 +352,14 @@
       transform: translateY(-6px);
       background: rgba(18,18,18,0.8);
     }
-    .flash-card .icon { font-size: 2rem; color: #6effe0; opacity: 0.6; margin-bottom: 0.6rem; }
+    .flash-card .icon { 
+      font-size: 2rem; 
+      color: #6effe0; 
+      opacity: 0.6; 
+      margin-bottom: 0.6rem;
+      font-family: 'tabler-icons', sans-serif;
+      line-height: 1;
+    }
     .flash-card h3 { 
       font-family: 'Space Mono', monospace; 
       font-size: 1.1rem; 
@@ -454,6 +461,11 @@
       text-align: center;
       font-size: 0.8rem;
       font-family: 'Space Grotesk', sans-serif;
+      width: 100%;
+    }
+    .footer__inner {
+      max-width: 1300px;
+      margin: 0 auto;
     }
     .footer__links { 
       display: flex; 
@@ -531,7 +543,15 @@
       .hero__sub { max-width: 100%; text-align: center; }
       .hero__title { text-align: center; }
       .hardware-grid { grid-template-columns: 1fr; }
-      .footer__links { gap: 0.8rem; }
+      
+      /* Footer wider on mobile */
+      .footer { padding: 1.5rem 0.8rem; }
+      .footer__links { 
+        gap: 0.8rem; 
+        width: 100%;
+        max-width: 100%;
+      }
+      .footer__links a { font-size: 0.8rem; }
     }
 
     @media (max-width: 480px) {
@@ -560,7 +580,11 @@
       .card { padding: 1.2rem 1rem; }
       .flash-card { padding: 1.2rem 1rem; }
       .hardware-card { padding: 1.2rem 1rem; }
+      
+      /* Footer even wider on small phones */
+      .footer { padding: 1.5rem 0.5rem; }
       .footer__links { gap: 0.6rem; font-size: 0.75rem; }
+      .footer__links a { font-size: 0.7rem; }
     }
   </style>
 </head>
@@ -701,13 +725,15 @@
   </main>
 
   <footer class="footer">
-    <div class="footer__links">
-      <a href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="hn hn-github"></i> GitHub</a>
-      <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank"><i class="hn hn-book"></i> Wiki</a>
-      <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="hn hn-download"></i> Releases</a>
-      <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="hn hn-message"></i> Discussions</a>
+    <div class="footer__inner">
+      <div class="footer__links">
+        <a href="https://github.com/wrait8/VoidRecon" target="_blank"><i class="hn hn-github"></i> GitHub</a>
+        <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank"><i class="hn hn-book"></i> Wiki</a>
+        <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="hn hn-download"></i> Releases</a>
+        <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="hn hn-message"></i> Discussions</a>
+      </div>
+      <p>© 2026 wrait8 · Void Recon — MIT licensed</p>
     </div>
-    <p>© 2026 wrait8 · Void Recon — MIT licensed</p>
   </footer>
 </div>
 
@@ -924,9 +950,20 @@
       scene.add(group);
     }
 
-    document.getElementById('nav-burger').addEventListener('click', () => {
+    document.getElementById('nav-burger').addEventListener('click', function(e) {
+      e.stopPropagation();
       const links = document.getElementById('nav-links');
       links.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const nav = document.querySelector('.nav');
+      const burger = document.getElementById('nav-burger');
+      const links = document.getElementById('nav-links');
+      if (!nav.contains(e.target) && links.classList.contains('active')) {
+        links.classList.remove('active');
+      }
     });
 
     function resize() {
