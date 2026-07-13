@@ -53,13 +53,21 @@ void loop() {
             }
         }
         else if (data == '\r' || data == '\n') {
-            if (!cli.isChatMode()) {
-                Serial.write('\n');
-            }
             buffer[length] = '\0';
-            if (length > 0 && !cli.isChatMode()) {
-                cli.processLine(buffer);
-                Serial.print("vd1 > ");
+            
+            // Check if line is empty (just Enter)
+            if (length == 0) {
+                // Empty line - just print the prompt without newline
+                if (!cli.isChatMode()) {
+                    Serial.print("vd1 > ");
+                }
+            } else {
+                // Non-empty line - process it
+                if (!cli.isChatMode()) {
+                    Serial.write('\n');  // Print newline before processing
+                    cli.processLine(buffer);
+                    Serial.print("vd1 > ");
+                }
             }
             length = 0;
         }
