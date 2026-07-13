@@ -95,11 +95,17 @@ void FrequencyAnalyzer::scan() {
         fineScan(result);
         
         if (result.rssi_fine > rssi_threshold) {
+            Serial.print("Fine: ");
             Serial.print(result.frequency_fine / 1000000.0);
             Serial.print("MHz");
+            Serial.print(" | RSSI: ");
+            Serial.println(result.rssi_fine);
         } else if (result.rssi_coarse > rssi_threshold) {
+            Serial.print("Coarse: ");
             Serial.print(result.frequency_coarse / 1000000.0);
             Serial.print("MHz");
+            Serial.print(" | RSSI: ");
+            Serial.println(result.rssi_coarse);
         }
         delay(10);
     }
