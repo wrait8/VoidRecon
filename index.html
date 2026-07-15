@@ -223,8 +223,21 @@
     }
     .stat { display: flex; align-items: center; gap: 0.6rem; }
     .stat__icon { font-size: 1.2rem; color: rgba(200,210,215,0.25); }
-    .stat__v { font-weight: 600; color: #fff; font-family: 'Space Mono', monospace; }
+    .stat__v { 
+      font-weight: 600; 
+      color: #fff; 
+      font-family: 'Space Mono', monospace;
+      min-width: 1.5rem;
+    }
     .stat__l { font-size: 0.75rem; color: rgba(200,210,215,0.35); margin-left: 0.2rem; font-family: 'Space Grotesk', sans-serif; }
+    .stat__v.loading {
+      opacity: 0.3;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
     .hero__visual {
       background: rgba(18,18,18,0.5);
       border: 1px solid rgba(255,255,255,0.04);
@@ -625,8 +638,8 @@
             <a href="https://github.com/wrait8/VoidRecon" class="btn btn--ghost" target="_blank"><i class="hn hn-github"></i> View source</a>
           </div>
           <div class="hero__stats">
-            <div class="stat"><i class="hn hn-star stat__icon"></i><div class="stat__body"><span class="stat__v" id="stars-count">3</span><span class="stat__l">stars</span></div></div>
-            <div class="stat"><i class="hn hn-fork stat__icon"></i><div class="stat__body"><span class="stat__v" id="forks-count">0</span><span class="stat__l">forks</span></div></div>
+            <div class="stat"><i class="hn hn-star stat__icon"></i><div class="stat__body"><span class="stat__v loading" id="stars-count">—</span><span class="stat__l">stars</span></div></div>
+            <div class="stat"><i class="hn hn-fork stat__icon"></i><div class="stat__body"><span class="stat__v loading" id="forks-count">—</span><span class="stat__l">forks</span></div></div>
             <div class="stat"><i class="hn hn-tag stat__icon"></i><div class="stat__body"><span class="stat__v">v0.0.1-beta.4</span><span class="stat__l">latest</span></div></div>
             <div class="stat"><i class="hn hn-check-circle stat__icon"></i><div class="stat__body"><span class="stat__v">MIT</span><span class="stat__l">license</span></div></div>
           </div>
@@ -828,13 +841,10 @@
     loadingDiv.textContent = 'Loading PCB…';
     container.appendChild(loadingDiv);
 
-    let modelLoaded = false;
-
     loader.load(
       modelPath,
       (gltf) => {
         loadingDiv.remove();
-        modelLoaded = true;
         
         const model = gltf.scene;
         
@@ -871,7 +881,6 @@
         console.log('✅ REAL PCB model loaded successfully!');
       },
       (xhr) => {
-        // Only show percentage if total is known and not 0
         if (xhr.total > 0) {
           const percent = Math.min(Math.round((xhr.loaded / xhr.total) * 100), 99);
           loadingDiv.textContent = `Loading PCB… ${percent}%`;
@@ -980,15 +989,24 @@
 
     // ── Fetch GitHub stats ──
     async function fetchGitHubStats() {
+      const starsEl = document.getElementById('stars-count');
+      const forksEl = document.getElementById('forks-count');
+      
       try {
         const response = await fetch('https://api.github.com/repos/wrait8/VoidRecon');
         if (response.ok) {
           const data = await response.json();
-          document.getElementById('stars-count').textContent = data.stargazers_count || 0;
-          document.getElementById('forks-count').textContent = data.forks_count || 0;
+          starsEl.textContent = data.stargazers_count || 0;
+          forksEl.textContent = data.forks_count || 0;
+          starsEl.classList.remove('loading');
+          forksEl.classList.remove('loading');
         }
       } catch (error) {
-        console.log('GitHub stats fetch failed, using defaults');
+        console.log('GitHub stats fetch failed, using fallback');
+        starsEl.textContent = '3';
+        forksEl.textContent = '0';
+        starsEl.classList.remove('loading');
+        forksEl.classList.remove('loading');
       }
     }
     fetchGitHubStats();
