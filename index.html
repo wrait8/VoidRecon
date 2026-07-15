@@ -363,13 +363,6 @@
       transform: translateY(-6px);
       background: rgba(18,18,18,0.8);
     }
-    .flash-card .icon { 
-      font-size: 2rem; 
-      color: #6effe0; 
-      opacity: 0.6; 
-      margin-bottom: 0.6rem;
-      line-height: 1;
-    }
     .flash-card h3 { 
       font-family: 'Space Mono', monospace; 
       font-size: 1.1rem; 
@@ -449,7 +442,6 @@
       color: #fff; 
       margin-bottom: 0.4rem; 
     }
-    .hardware-card h3 i { }
     .hardware-card p { 
       font-family: 'Space Grotesk', sans-serif;
       color: rgba(200,210,215,0.5); 
@@ -500,18 +492,18 @@
       font-family: 'Space Grotesk', sans-serif;
       color: rgba(200,210,215,0.15);
     }
+    .footer p a { color: rgba(200,210,215,0.3); }
+    .footer p a:hover { color: #fff; }
 
     /* ── Mobile fixes ── */
     @media (max-width: 800px) {
       .hero__inner { grid-template-columns: 1fr; gap: 2rem; }
       
-      /* LTR text alignment on mobile */
       .hero__title { text-align: left; }
       .hero__sub { max-width: 100%; text-align: left; }
       .hero__cta { justify-content: flex-start; }
       .hero__stats { gap: 0.8rem; justify-content: flex-start; padding-top: 0.8rem; margin-top: 0.8rem; }
       
-      /* Mobile menu - only show burger, hide GitHub and Releases from nav actions */
       .nav__actions .btn--ghost { display: none; }
       .nav__burger { display: block; }
       
@@ -535,7 +527,6 @@
       .nav__actions { order: 2; }
       .nav__links { order: 3; }
       
-      /* Bigger buttons on mobile */
       .hero__cta .btn {
         font-size: 1rem;
         padding: 0.7rem 1.8rem;
@@ -543,7 +534,6 @@
         justify-content: center;
       }
       
-      /* Stats smaller and better spaced on mobile */
       .stat { 
         flex-direction: row; 
         align-items: center; 
@@ -559,7 +549,6 @@
       .flash-options { grid-template-columns: 1fr; }
       .hardware-grid { grid-template-columns: 1fr; }
       
-      /* Footer wider on mobile */
       .footer { padding: 1.5rem 0.8rem; }
       .footer__links { 
         gap: 0.8rem; 
@@ -573,14 +562,12 @@
       .nav { padding: 0.4rem 0.8rem; }
       .nav__brand { font-size: 1rem; }
       
-      /* Even bigger buttons on small phones */
       .hero__cta .btn {
         font-size: 0.9rem;
         padding: 0.6rem 1.4rem;
         min-width: 120px;
       }
       
-      /* Stats even smaller */
       .hero__stats { gap: 0.5rem; }
       .stat { gap: 0.2rem; font-size: 0.75rem; }
       .stat__icon { font-size: 0.8rem; }
@@ -596,7 +583,6 @@
       .flash-card { padding: 1.2rem 1rem; }
       .hardware-card { padding: 1.2rem 1rem; }
       
-      /* Footer even wider on small phones */
       .footer { padding: 1.5rem 0.5rem; }
       .footer__links { gap: 0.6rem; font-size: 0.75rem; }
       .footer__links a { font-size: 0.7rem; }
@@ -639,8 +625,8 @@
             <a href="https://github.com/wrait8/VoidRecon" class="btn btn--ghost" target="_blank"><i class="hn hn-github"></i> View source</a>
           </div>
           <div class="hero__stats">
-            <div class="stat"><i class="hn hn-star stat__icon"></i><div class="stat__body"><span class="stat__v">3</span><span class="stat__l">stars</span></div></div>
-            <div class="stat"><i class="hn hn-fork stat__icon"></i><div class="stat__body"><span class="stat__v">0</span><span class="stat__l">forks</span></div></div>
+            <div class="stat"><i class="hn hn-star stat__icon"></i><div class="stat__body"><span class="stat__v" id="stars-count">3</span><span class="stat__l">stars</span></div></div>
+            <div class="stat"><i class="hn hn-fork stat__icon"></i><div class="stat__body"><span class="stat__v" id="forks-count">0</span><span class="stat__l">forks</span></div></div>
             <div class="stat"><i class="hn hn-tag stat__icon"></i><div class="stat__body"><span class="stat__v">v0.0.1-beta.4</span><span class="stat__l">latest</span></div></div>
             <div class="stat"><i class="hn hn-check-circle stat__icon"></i><div class="stat__body"><span class="stat__v">MIT</span><span class="stat__l">license</span></div></div>
           </div>
@@ -655,12 +641,12 @@
     <section class="section" id="features">
       <div class="section__inner">
         <span class="eyebrow"><i class="hn hn-wifi"></i>Features</span>
-        <h2 class="section__title">Everything RF,<br />one tool<span class="accent">.</span></h2>
+        <h2 class="section__title">Everything RF,<br />one tool<span class="accent"></span></h2>
         <p class="section__sub">Packet sniffer, frequency analyzer, raw capture/replay, jamming, brute‑force, and more.</p>
         <div class="grid">
           <div class="card"><div class="card__icon"><i class="ti ti-antenna"></i></div><h3 class="card__title">Packet Sniffer</h3><p class="card__desc">Receive and log RF packets with live RSSI monitoring and link quality.</p></div>
           <div class="card"><div class="card__icon"><i class="ti ti-chart-bar"></i></div><h3 class="card__title">Frequency Analyzer</h3><p class="card__desc">Scan and detect active channels across the Sub‑GHz spectrum.</p></div>
-          <div class="card"><div class="card__icon"><i class="ti ti-device-floppy"></i></div><h3 class="card__title">RAW Capture / Replay</h3><p class="card__desc">Record raw RF samples (<code>rxraw</code>) and replay (<code>playraw</code>) with precision.</p></div>
+          <div class="card"><div class="card__icon"><i class="ti ti-device-floppy"></i></div><h3 class="card__title">RAW Capture / Replay</h3><p class="card__desc">Record raw RF samples (<code>recraw</code>) and replay (<code>playraw</code>) with precision.</p></div>
           <div class="card"><div class="card__icon"><i class="ti ti-repeat"></i></div><h3 class="card__title">Fixed‑Code Replay</h3><p class="card__desc">Capture and replay fixed‑code signals (<code>recsig</code>, <code>playsig</code>) for remotes.</p></div>
           <div class="card"><div class="card__icon"><i class="ti ti-settings"></i></div><h3 class="card__title">Multi‑Modulation</h3><p class="card__desc">2‑FSK, GFSK, ASK/OOK, 4‑FSK, MSK — full configurable radio parameters.</p></div>
           <div class="card"><div class="card__icon"><i class="ti ti-zap"></i></div><h3 class="card__title">Jamming &amp; Brute‑Force</h3><p class="card__desc">Continuous jamming (<code>jam</code>) and timing‑based brute‑force (<code>brute</code>) modes.</p></div>
@@ -671,7 +657,7 @@
     <section class="section section--alt" id="flash">
       <div class="section__inner">
         <span class="eyebrow"><i class="hn hn-bolt"></i>Flash</span>
-        <h2 class="section__title">Pick your method<span class="accent">.</span></h2>
+        <h2 class="section__title">Pick your method<span class="accent"></span></h2>
         <p class="section__sub">Choose the flashing approach that fits your workflow.</p>
 
         <div class="release-banner">
@@ -688,7 +674,6 @@
 
         <div class="flash-options">
           <div class="flash-card">
-            <div class="icon"><i class="ti ti-globe"></i></div>
             <h3>Web Flasher</h3>
             <p>Real ESP32 protocol via Web Serial — no toolchain needed. Connect, select firmware, flash.</p>
             <div class="foot">
@@ -698,7 +683,6 @@
           </div>
 
           <div class="flash-card">
-            <div class="icon"><i class="ti ti-terminal"></i></div>
             <h3>CLI Tool</h3>
             <p>Use the built‑in <code>Flasher.py</code> from the <code>/Flasher</code> folder. Interactive or direct mode.</p>
             <div class="foot">
@@ -707,7 +691,6 @@
           </div>
 
           <div class="flash-card">
-            <div class="icon"><i class="ti ti-code"></i></div>
             <h3>Source &amp; IDE</h3>
             <p>Download the source, open <code>VoidRecon.ino</code> in Arduino IDE, and upload to your board.</p>
             <div class="foot">
@@ -722,15 +705,15 @@
     <section class="section" id="hardware">
       <div class="section__inner">
         <span class="eyebrow"><i class="hn hn-cog"></i>Hardware</span>
-        <h2 class="section__title">PCB &amp; breadboard<span class="accent">.</span></h2>
+        <h2 class="section__title">PCB &amp; breadboard<span class="accent"></span></h2>
         <p class="section__sub">Official PCB, schematics, Gerber, and BOM — plus breadboard wiring for ESP32 + CC1101.</p>
         <div class="hardware-grid">
           <div class="hardware-card">
-            <h3><i class="ti ti-circuit-board"></i> PCB v1</h3>
-            <p>Atmega32u4 + CC1101, USB‑C, SMA antenna. All files in <code>PCB/</code>.</p>
+            <h3>PCB v1</h3>
+            <p>Atmega32u4 + CC1101, USB‑C, SMA antenna. All files in <a href="https://github.com/wrait8/VoidRecon/tree/main/PCB/" target="_blank">PCB/</a>.</p>
           </div>
           <div class="hardware-card">
-            <h3><i class="ti ti-layout-grid"></i> Breadboard</h3>
+            <h3>Breadboard</h3>
             <p>ESP32 + CC1101 module — wiring diagram in the <a href="https://github.com/wrait8/VoidRecon/wiki" target="_blank">Wiki</a>.</p>
           </div>
         </div>
@@ -747,7 +730,7 @@
         <a href="https://github.com/wrait8/VoidRecon/releases" target="_blank"><i class="ti ti-download"></i> Releases</a>
         <a href="https://github.com/wrait8/VoidRecon/discussions" target="_blank"><i class="ti ti-message"></i> Discussions</a>
       </div>
-      <p>© 2026 wrait8 · Void Recon — MIT licensed</p>
+      <p>© 2026 <a href="https://wrait8.github.io" target="_blank">wrait8</a> · Void Recon — MIT licensed</p>
     </div>
   </footer>
 </div>
@@ -842,13 +825,16 @@
       text-align: center;
       line-height: 1.8;
     `;
-    loadingDiv.innerHTML = 'Loading PCB…<br><span style="font-size:0.7rem;color:rgba(200,210,215,0.12);">models/voidrecon-pcb.glb</span>';
+    loadingDiv.textContent = 'Loading PCB…';
     container.appendChild(loadingDiv);
+
+    let modelLoaded = false;
 
     loader.load(
       modelPath,
       (gltf) => {
         loadingDiv.remove();
+        modelLoaded = true;
         
         const model = gltf.scene;
         
@@ -884,9 +870,14 @@
         scene.add(model);
         console.log('✅ REAL PCB model loaded successfully!');
       },
-      (progress) => {
-        const percent = (progress.loaded / progress.total * 100).toFixed(0);
-        loadingDiv.innerHTML = `Loading PCB… ${percent}%<br><span style="font-size:0.7rem;color:rgba(200,210,215,0.12);">models/voidrecon-pcb.glb</span>`;
+      (xhr) => {
+        // Only show percentage if total is known and not 0
+        if (xhr.total > 0) {
+          const percent = Math.min(Math.round((xhr.loaded / xhr.total) * 100), 99);
+          loadingDiv.textContent = `Loading PCB… ${percent}%`;
+        } else {
+          loadingDiv.textContent = 'Loading PCB…';
+        }
       },
       (error) => {
         loadingDiv.remove();
@@ -965,7 +956,7 @@
       scene.add(group);
     }
 
-    // ── Burger menu functionality ──
+    // ── Burger menu ──
     const burger = document.getElementById('nav-burger');
     const navLinks = document.getElementById('nav-links');
 
@@ -974,7 +965,6 @@
       navLinks.classList.toggle('open');
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       const nav = document.querySelector('.nav');
       if (nav && !nav.contains(e.target)) {
@@ -982,12 +972,26 @@
       }
     });
 
-    // Close menu when clicking a link
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function() {
         navLinks.classList.remove('open');
       });
     });
+
+    // ── Fetch GitHub stats ──
+    async function fetchGitHubStats() {
+      try {
+        const response = await fetch('https://api.github.com/repos/wrait8/VoidRecon');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('stars-count').textContent = data.stargazers_count || 0;
+          document.getElementById('forks-count').textContent = data.forks_count || 0;
+        }
+      } catch (error) {
+        console.log('GitHub stats fetch failed, using defaults');
+      }
+    }
+    fetchGitHubStats();
 
     function resize() {
       const w = container.clientWidth;
