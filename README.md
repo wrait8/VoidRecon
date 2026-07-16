@@ -33,3 +33,6 @@
 -  **Interrupt-driven capture** - Accurate timing
 -  **`.sub` file import/export** - Flipper Zero compatibility
 
+Download the [latest release](https: //github.com/wrait8/VoidRecon/releases/latest) of the firmware.Check out the project [wiki](https://github.com/wrait8/VoidRecon/wiki)
+
+for a full overview of the VoidRecon
