@@ -52,7 +52,7 @@
       width: 100%;
       height: 100%;
       background: url('https://wrait8.github.io/Images/bg%20colors%20effect.png') center/cover no-repeat;
-      opacity: 0.3;
+      opacity: 0.4;
       mix-blend-mode: screen;
       pointer-events: none;
       z-index: 0;
@@ -63,9 +63,9 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse at 30% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 50%, rgba(200, 200, 255, 0.03) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+        radial-gradient(ellipse at 30% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 50%, rgba(200, 200, 255, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 40%);
       pointer-events: none;
     }
 
@@ -791,17 +791,21 @@
     });
     renderer.setSize(width, height);
     
-    // ── Lower pixel ratio on mobile for performance ──
+    // ── MID quality on mobile ──
     if (isSmallPhone) {
-      renderer.setPixelRatio(1);
+      renderer.setPixelRatio(1.2);
     } else if (isMobile) {
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
     } else {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     }
     
-    renderer.shadowMap.enabled = !isMobile;
-    if (renderer.shadowMap.enabled) {
+    // ── Shadows: ON but lower quality on mobile ──
+    renderer.shadowMap.enabled = true;
+    if (isMobile) {
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.bias = 0.0001;
+    } else {
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     }
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -812,51 +816,52 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = isMobile ? 0.8 : 1.5;
+    controls.autoRotateSpeed = isMobile ? 1.0 : 1.5;
     controls.minDistance = 2;
     controls.maxDistance = 20;
     controls.target.set(0, 2, 0);
     controls.maxPolarAngle = Math.PI;
     controls.minPolarAngle = 0;
 
-    const ambient = new THREE.AmbientLight(0x404060, isMobile ? 0.4 : 0.5);
+    const ambient = new THREE.AmbientLight(0x404060, isMobile ? 0.45 : 0.5);
     scene.add(ambient);
 
-    const keyLight = new THREE.DirectionalLight(0xffeedd, isMobile ? 1.8 : 2.5);
+    const keyLight = new THREE.DirectionalLight(0xffeedd, isMobile ? 2.0 : 2.5);
     keyLight.position.set(4, 8, 6);
-    if (!isMobile) {
-      keyLight.castShadow = true;
+    keyLight.castShadow = true;
+    if (isMobile) {
+      keyLight.shadow.mapSize.width = 512;
+      keyLight.shadow.mapSize.height = 512;
+    } else {
       keyLight.shadow.mapSize.width = 1024;
       keyLight.shadow.mapSize.height = 1024;
-      keyLight.shadow.camera.near = 0.5;
-      keyLight.shadow.camera.far = 20;
-      keyLight.shadow.camera.left = -5;
-      keyLight.shadow.camera.right = 5;
-      keyLight.shadow.camera.top = 5;
-      keyLight.shadow.camera.bottom = -5;
-      keyLight.shadow.bias = -0.001;
     }
+    keyLight.shadow.camera.near = 0.5;
+    keyLight.shadow.camera.far = 20;
+    keyLight.shadow.camera.left = -5;
+    keyLight.shadow.camera.right = 5;
+    keyLight.shadow.camera.top = 5;
+    keyLight.shadow.camera.bottom = -5;
+    keyLight.shadow.bias = -0.001;
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x6effe0, isMobile ? 0.4 : 0.6);
+    const fillLight = new THREE.DirectionalLight(0x6effe0, isMobile ? 0.5 : 0.6);
     fillLight.position.set(-4, 3, -3);
     scene.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(0x4488ff, isMobile ? 0.3 : 0.5);
+    const rimLight = new THREE.DirectionalLight(0x4488ff, isMobile ? 0.4 : 0.5);
     rimLight.position.set(-3, 1, -6);
     scene.add(rimLight);
 
-    if (!isMobile) {
-      const bottomLight = new THREE.DirectionalLight(0x6effe0, 0.3);
-      bottomLight.position.set(0, -5, 0);
-      scene.add(bottomLight);
-    }
+    const bottomLight = new THREE.DirectionalLight(0x6effe0, isMobile ? 0.2 : 0.3);
+    bottomLight.position.set(0, -5, 0);
+    scene.add(bottomLight);
 
-    const topLight = new THREE.DirectionalLight(0xffffff, isMobile ? 0.2 : 0.4);
+    const topLight = new THREE.DirectionalLight(0xffffff, isMobile ? 0.3 : 0.4);
     topLight.position.set(0, 10, 0);
     scene.add(topLight);
 
-    const hemiLight = new THREE.HemisphereLight(0x6effe0, 0x0b0c0e, isMobile ? 0.15 : 0.3);
+    const hemiLight = new THREE.HemisphereLight(0x6effe0, 0x0b0c0e, isMobile ? 0.2 : 0.3);
     scene.add(hemiLight);
 
     const loader = new GLTFLoader();
@@ -900,10 +905,10 @@
           if (node.isMesh && node.material) {
             node.material.roughness = Math.min(node.material.roughness || 0.5, 0.7);
             node.material.metalness = Math.min(node.material.metalness || 0.3, 0.6);
-            // Lower quality on mobile
+            // MID quality on mobile
             if (isMobile) {
-              node.material.roughness = Math.min(node.material.roughness || 0.5, 0.8);
-              node.material.metalness = Math.min(node.material.metalness || 0.3, 0.4);
+              node.material.roughness = Math.min(node.material.roughness || 0.5, 0.75);
+              node.material.metalness = Math.min(node.material.metalness || 0.3, 0.5);
             }
           }
         });
