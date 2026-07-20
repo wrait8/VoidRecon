@@ -38,9 +38,6 @@ unsigned long txTimer = 0;
 void setup() {
   Serial.begin(115200);
   while (!Serial);
-  
-  showBanner();
-  
   // Configure CC1101 pins
   rf.setSpiPin(SCK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
   rf.setGDO0(GDO0_PIN);
@@ -175,18 +172,6 @@ void handleBandSelect(int band) {
   Serial.println("Enter the precisely measured frequency in MHz (e.g., 378.015):");
   
   currentState = MEASURE_LOW;
-}
-
-void showBanner() {
-  Serial.println();
-  Serial.println(" _________        .__  ._____.                 __                ");
-  Serial.println(" \\_   ___ \\_____  |  | |__\\_ |______________ _/  |_  ___________ ");
-  Serial.println(" /    \\  \\/\\__  \\ |  | |  || __ \\_  __ \\__  \\\\   __\\/  _ \\_  __ \\");
-  Serial.println(" \\     \\____/ __ \\|  |_|  || \\_\\ \\  | \\// __ \\|  | (  <_> )  | \\/");
-  Serial.println("  \\______  (____  /____/__||___  /__|  (____  /__|  \\____/|__|   ");
-  Serial.println("         \\/     \\/             \\/           \\/                    ");
-  Serial.println("                                         @wrait8");
-  Serial.println();
 }
 
 void showMenu() {
