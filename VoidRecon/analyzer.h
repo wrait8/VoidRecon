@@ -1,8 +1,9 @@
+// analyzer.h
 #ifndef ANALYZER_H
 #define ANALYZER_H
 
 #include <Arduino.h>
-#include <ELECHOUSE_CC1101_SRC_DRV.h>
+#include <SmartRC_CC1101.h>
 
 class FrequencyAnalyzer {
 public:
