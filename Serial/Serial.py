@@ -12,7 +12,6 @@ import uuid
 import argparse
 import shutil
 import subprocess
-from cryptography.fernet import Fernet
 
 TIMEOUT_DURATION = 15 # seconds
 
@@ -29,10 +28,7 @@ RESET = Fore.RESET
 PORT = "COM3"
 BAUD = 115200
 
-# === ENCRYPTION SETUP ===
-KEY_FILE = "serial_log.key"
-encryption_key = None
-cipher = None
+# === LOGGING SETUP ===
 LOG_FILE = None
 SESSION_ID = None
 should_exit = False
@@ -41,8 +37,7 @@ exit_pressed = False
 
 # === COMMAND LINE ARGUMENTS ===
 parser = argparse.ArgumentParser(description='Serial Terminal with Logging')
-parser.add_argument('--output', '-o', type=str, nargs='?', const='auto', help='Save encrypted log output')
-parser.add_argument('--output-key', '-k', type=str, help='Specify custom key file for encryption')
+parser.add_argument('--output', '-o', type=str, nargs='?', const='auto', help='Save log output')
 parser.add_argument('--port', '-p', type=str, help=f'Serial port (default: {PORT})')
 parser.add_argument('--baud', '-b', type=int, help=f'Baud rate (default: {BAUD})')
 args = parser.parse_args()
@@ -51,11 +46,6 @@ if args.port:
     PORT = args.port
 if args.baud:
     BAUD = args.baud
-
-if args.output_key:
-    KEY_FILE = args.output_key
-    if not KEY_FILE.endswith('.key'):
-        KEY_FILE += '.key'
 
 output_filename = None
 if args.output:
@@ -135,50 +125,24 @@ def execute_system_command(command):
         print("-" * 50)
         return False
 
-# === ENCRYPTION FUNCTIONS ===
-def generate_key():
-    key = Fernet.generate_key()
-    with open(KEY_FILE, 'wb') as key_file:
-        key_file.write(key)
-    return key
-
-def load_or_create_key():
-    if os.path.exists(KEY_FILE):
-        with open(KEY_FILE, 'rb') as key_file:
-            return key_file.read()
-    else:
-        return generate_key()
-
-def encrypt_data(data, cipher):
-    if cipher:
-        return cipher.encrypt(data.encode())
-    return data.encode()
-
-def save_encrypted_log(data_buffer, log_file_path, cipher):
+def save_log(data_buffer, log_file_path):
+    """Save log to plain text file"""
     if data_buffer and log_file_path:
-        encrypted_data = encrypt_data(''.join(data_buffer), cipher)
-        with open(log_file_path, 'wb') as f:
-            f.write(encrypted_data)
-        print(GREEN + f"[+] Encrypted log saved to: {log_file_path}" + RESET)
-        print(YELLOW + f"[!] Key file: {KEY_FILE} (KEEP THIS SAFE!)" + RESET)
+        with open(log_file_path, 'w', encoding='utf-8') as f:
+            f.write(''.join(data_buffer))
+        print(GREEN + f"[+] Log saved to: {log_file_path}" + RESET)
 
 def get_timestamp():
     return datetime.datetime.now().strftime("[%H:%M:%S]")
 
 def ascii():
-    ASCII = """⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡾⠿⢿⡀⠀⠀⠀⠀⣠⣶⣿⣷⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⢀⣴⣦⣴⣿⡋⠀⠀⠈⢳⡄⠀⢠⣾⣿⠁⠈⣿⡆⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⣰⣿⣿⠿⠛⠉⠉⠁⠀⠀⠀⠹⡄⣿⣿⣿⠀⠀⢹⡇⠀⠀⠀
-    ⠀⠀⠀⠀⣠⣾⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⣰⣏⢻⣿⣿⡆⠀⠸⣿⠀⠀⠀
-    ⠀⠀⢀⣴⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣆⠹⣿⣷⠀⢘⣿⠀⠀⠀
-    ⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⠋⠉⠛⠂⠹⠿⣲⣿⣿⣧⠀⠀
-    ⢠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣿⣿⣿⣷⣾⣿⡇⢀⠀⣼⣿⣿⣿⣧⠀
-   ⠰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⡘⢿⣿⣿⣿⠀@wrait8
-   ⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣷⡈⠿⢿⣿⡆VoidRecon
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠁⢙⠛⣿⣿⣿⣿⡟⠀⡿⠀⠀⢀⣿⡇
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣶⣤⣉⣛⠻⠇⢠⣿⣾⣿⡄⢻⡇
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣦⣤⣾⣿⣿⣿⣿⣆⠁"""
+    ASCII = """
+____   ____    .__    ._____________                            
+\\   \ /   /___ |__| __| _/\\______   \ ____   ____  ____   ____  
+ \\   Y   /  _ \\|  |/ __ |  |       _// __ \_/ ___\/  _ \ /    \\ 
+  \\     (  <_> )  / /_/ |  |    |   \\  ___/\  \__(  <_> )   |  \\
+   \\___/ \\____/|__\\____ |  |____|_  /\\___  >\\___  >____/|___|  /
+                       \\/         \\/     \\/     \\/           \\/ """
     print(ASCII)
 
 def initial_boot_message_logic():
@@ -349,18 +313,13 @@ def save_log_automatically(log_buffer):
     if not log_buffer:
         return
     
-    encryption_key = load_or_create_key()
-    cipher = Fernet(encryption_key)
-    
     global output_filename
     if output_filename:
         log_file_path = output_filename
-        if not log_file_path.endswith('.enc'):
-            log_file_path += '.enc'
     else:
-        log_file_path = f"serial_log_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{SESSION_ID}.enc"
+        log_file_path = f"serial_log_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{SESSION_ID}.txt"
     
-    save_encrypted_log(log_buffer, log_file_path, cipher)
+    save_log(log_buffer, log_file_path)
 
 # === START BANNER ===
 os.system("clear||cls")
